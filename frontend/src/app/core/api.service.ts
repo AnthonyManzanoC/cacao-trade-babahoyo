@@ -5,7 +5,7 @@ import { CashRegister, CocoaState, DashboardData, InventoryItem, InventoryLot, P
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);
-  private readonly base = 'http://localhost:5080/api';
+  private readonly base = 'https://cacao-trade-babahoyo.onrender.com/api';
 
   publicPrice() { return this.http.get<PublicPrice>(`${this.base}/public/price`); }
   publicContent(section?: PublicContentSection) { return this.http.get<PublicContent[]>(`${this.base}/public-content`, { params: section ? { section } : {} }); }
