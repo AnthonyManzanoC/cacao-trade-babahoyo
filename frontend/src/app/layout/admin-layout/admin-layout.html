@@ -1,0 +1,17 @@
+<div class="min-h-screen bg-[#f5f5f1] lg:grid lg:grid-cols-[258px_1fr]">
+  <button type="button" class="fixed left-4 top-4 z-40 grid h-11 w-11 place-items-center rounded-xl bg-forest-900 text-white shadow-lg lg:hidden" (click)="menuOpen.set(true)" aria-label="Abrir menú"><svg lucideMenu size="21"></svg></button>
+  @if (menuOpen()) { <button type="button" aria-label="Cerrar menú" class="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden" (click)="menuOpen.set(false)"></button> }
+  <aside class="fixed inset-y-0 left-0 z-50 flex w-[258px] flex-col bg-forest-950 text-white transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0" [class.-translate-x-full]="!menuOpen()">
+    <div class="flex h-20 items-center justify-between border-b border-white/8 px-5"><a routerLink="/" class="flex items-center gap-3"><span class="grid h-10 w-10 place-items-center rounded-xl bg-harvest-500 text-forest-950"><svg lucideSprout size="21"></svg></span><span><strong class="block max-w-36 truncate text-sm tracking-wide">{{ businessName() | uppercase }}</strong><small class="text-[10px] uppercase tracking-[.18em] text-white/40">Administración</small></span></a><button class="p-2 text-white/60 lg:hidden" (click)="menuOpen.set(false)" aria-label="Cerrar"><svg lucideX size="20"></svg></button></div>
+    <nav class="flex-1 space-y-1 px-3 py-6">
+      @for (link of links; track link.path) {
+        <a [routerLink]="link.path" routerLinkActive="!bg-white/12 !text-white" (click)="menuOpen.set(false)" class="flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium text-white/60 transition hover:bg-white/7 hover:text-white">
+          @switch (link.icon) { @case ('dashboard') { <svg lucideLayoutDashboard size="19"></svg> } @case ('purchases') { <svg lucideReceiptText size="19"></svg> } @case ('producers') { <svg lucideUsersRound size="19"></svg> } @case ('inventory') { <svg lucideBoxes size="19"></svg> } @case ('processing') { <svg lucideSun size="19"></svg> } @case ('sales') { <svg lucideBadgeDollarSign size="19"></svg> } @case ('cash') { <svg lucideBadgeDollarSign size="19"></svg> } @default { <svg lucideSettings size="19"></svg> } }
+          {{ link.label }}
+        </a>
+      }
+    </nav>
+    <div class="border-t border-white/8 p-4"><div class="mb-4 flex items-center gap-3 px-2"><span class="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-sm font-bold">{{ auth.user()?.fullName?.charAt(0) }}</span><div class="min-w-0"><strong class="block truncate text-sm">{{ auth.user()?.fullName }}</strong><small class="block truncate text-white/40">{{ auth.user()?.email }}</small></div></div><button type="button" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/50 transition hover:bg-red-500/10 hover:text-red-300" (click)="auth.logout()"><svg lucideLogOut size="18"></svg> Cerrar sesión</button></div>
+  </aside>
+  <main class="min-w-0 pt-16 lg:pt-0"><router-outlet /></main>
+</div>

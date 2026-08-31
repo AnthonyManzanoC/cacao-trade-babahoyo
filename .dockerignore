@@ -1,0 +1,17 @@
+# Local secrets must never enter a Docker build context.
+**/appsettings.Local.json
+.env
+.env.*
+
+# Source-control and editor files
+.git/
+.vs/
+.idea/
+
+# Build artifacts and frontend dependencies
+**/bin/
+**/obj/
+**/node_modules/
+**/.angular/
+**/dist/
+output/

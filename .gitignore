@@ -1,0 +1,23 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+appsettings.Local.json
+**/appsettings.Local.json
+
+# Build output
+**/bin/
+**/obj/
+**/node_modules/
+**/.angular/
+**/dist/
+.tools/
+.npm-cache/
+
+# Editors / OS
+.vs/
+.idea/
+*.user
+.DS_Store
+Thumbs.db
+output/

@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: origen-cacao-api
+    runtime: docker
+    dockerfilePath: ./backend/src/OrigenCacao.Api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: Jwt__Key
+        generateValue: true
+      - key: ApiNinjas__ApiKey
+        sync: false
+      - key: Admin__Email
+        sync: false
+      - key: Admin__Password
+        sync: false
+      - key: Cors__Origins__0
+        sync: false

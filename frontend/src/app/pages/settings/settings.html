@@ -1,0 +1,50 @@
+<div class="admin-page">
+  <header><p class="eyebrow">Reglas del negocio</p><h1 class="admin-title mt-2">Configuración general</h1><p class="mt-2 text-sm text-slate-500">Precios, identidad, contacto y envío de comprobantes desde un solo lugar.</p></header>
+  @if (message()) { <div class="mt-6 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800"><svg lucideCircleCheck size="19"></svg>{{ message() }}</div> }
+  @if (error()) { <div class="mt-6 flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"><svg lucideTriangleAlert size="19"></svg>{{ error() }}</div> }
+  @if (form(); as f) {
+    <form class="mt-7 grid gap-5 xl:grid-cols-[1.15fr_.85fr]" (ngSubmit)="save()">
+      <div class="space-y-5">
+        <section class="panel p-6">
+          <div class="flex items-center gap-3"><span class="grid h-11 w-11 place-items-center rounded-xl bg-forest-900 text-white"><svg lucideCloudCog size="21"></svg></span><div><h2 class="font-bold text-slate-900">Motor de precios</h2><p class="text-xs text-slate-400">API Ninjas → Yahoo Finance → precio manual</p></div></div>
+          <div class="mt-6 grid gap-5 sm:grid-cols-2">
+            <div><label class="label" for="margin">Margen / costos por quintal</label><input id="margin" name="margin" class="field" type="number" min="0" step="0.01" [(ngModel)]="f.marginPerQuintal" /><p class="mt-1 text-xs text-slate-400">Se resta al precio convertido de bolsa.</p></div>
+            <div><label class="label" for="factor">Factor cacao en baba</label><input id="factor" name="factor" class="field" type="number" min="0.01" max="1" step="0.01" [(ngModel)]="f.wetPriceFactor" /><p class="mt-1 text-xs text-slate-400">0.40 equivale al 40% del precio seco.</p></div>
+            <div class="sm:col-span-2"><label class="label" for="manualPrice">Precio manual de respaldo: cacao seco / qq</label><input id="manualPrice" name="manualPrice" class="field" type="number" min="0.01" step="0.01" [(ngModel)]="f.manualDryPricePerQuintal" /><p class="mt-1 text-xs text-slate-400">Se usa si los dos proveedores externos fallan.</p></div>
+          </div>
+          <label class="mt-5 flex items-center justify-between rounded-2xl border border-black/7 bg-cream-50 p-4"><span><strong class="block text-sm text-slate-900">Forzar precio manual</strong><small class="mt-1 block text-slate-400">Pausa las consultas automáticas.</small></span><input type="checkbox" name="manual" [(ngModel)]="f.useManualPrice" class="h-5 w-5 accent-forest-800" /></label>
+          @if (!f.useManualPrice) { <div class="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-800"><strong>Modo automático activo.</strong> Intenta API Ninjas, luego Yahoo Finance y finalmente el precio manual de respaldo.</div> }
+          <div class="mt-5 flex flex-wrap gap-3"><button class="btn-primary" type="submit" [disabled]="saving()"><svg lucideSave size="17"></svg>{{ saving() ? 'Guardando…' : 'Guardar cambios' }}</button><button class="btn-secondary" type="button" (click)="refresh()" [disabled]="refreshing() || f.useManualPrice"><svg lucideRefreshCw size="17"></svg>{{ refreshing() ? 'Consultando…' : 'Consultar mercado ahora' }}</button></div>
+        </section>
+        <section class="panel p-6">
+          <h2 class="font-bold text-slate-900">Marca y contacto público</h2><p class="mt-1 text-xs text-slate-400">Se actualiza en cabeceras, pie de página, Contacto y WhatsApp.</p>
+          <div class="mt-5 grid gap-5 sm:grid-cols-2">
+            <div><label class="label" for="business">Nombre del negocio</label><input id="business" name="business" class="field" required [(ngModel)]="f.businessName" /></div>
+            <div><label class="label" for="location">Ciudad / provincia</label><input id="location" name="location" class="field" [(ngModel)]="f.location" /></div>
+            <div class="sm:col-span-2"><label class="label" for="address">Dirección completa</label><input id="address" name="address" class="field" [(ngModel)]="f.contactAddress" /></div>
+            <div><label class="label" for="phone">Teléfono</label><input id="phone" name="phone" class="field" inputmode="tel" [(ngModel)]="f.contactPhone" /></div>
+            <div><label class="label" for="whatsapp">WhatsApp con código de país</label><input id="whatsapp" name="whatsapp" class="field" inputmode="tel" placeholder="593999999999" [(ngModel)]="f.contactWhatsApp" /></div>
+            <div class="sm:col-span-2"><label class="label" for="contactEmail">Correo de contacto</label><input id="contactEmail" name="contactEmail" class="field" type="email" [(ngModel)]="f.contactEmail" /></div>
+            <div class="sm:col-span-2"><label class="label" for="map">URL para insertar Google Maps</label><input id="map" name="map" class="field" type="url" placeholder="https://www.google.com/maps/embed?..." [(ngModel)]="f.googleMapsEmbedUrl" /><p class="mt-1 text-xs text-slate-400">Google Maps: Compartir → Insertar un mapa → copia la URL de src.</p></div>
+          </div>
+          <label class="mt-5 flex items-center gap-3"><input type="checkbox" name="pickup" [(ngModel)]="f.pickupEnabled" class="h-4 w-4 accent-forest-800" /><span class="text-sm font-medium text-slate-700">Mostrar recolección en finca</span></label>
+        </section>
+        <section class="panel p-6">
+          <div class="flex flex-wrap items-start justify-between gap-3"><div><h2 class="font-bold text-slate-900">Correo SMTP para comprobantes</h2><p class="mt-1 text-xs text-slate-400">La contraseña nunca vuelve al navegador.</p></div><span class="rounded-full px-3 py-1 text-xs font-bold" [class.bg-emerald-50]="f.smtpPasswordConfigured" [class.text-emerald-700]="f.smtpPasswordConfigured" [class.bg-amber-50]="!f.smtpPasswordConfigured" [class.text-amber-700]="!f.smtpPasswordConfigured">{{ f.smtpPasswordConfigured ? 'Contraseña configurada' : 'Falta contraseña' }}</span></div>
+          <label class="mt-5 flex items-center justify-between rounded-2xl border border-black/7 bg-cream-50 p-4"><span><strong class="block text-sm text-slate-900">Habilitar envío de correos</strong><small class="mt-1 block text-slate-400">Activa el envío en compras y ventas.</small></span><input type="checkbox" name="emailEnabled" [(ngModel)]="f.emailSendingEnabled" class="h-5 w-5 accent-forest-800" /></label>
+          <div class="mt-5 grid gap-5 sm:grid-cols-2">
+            <div><label class="label" for="smtpHost">Servidor SMTP</label><input id="smtpHost" name="smtpHost" class="field" placeholder="smtp.gmail.com" [(ngModel)]="f.smtpHost" /></div>
+            <div><label class="label" for="smtpPort">Puerto</label><input id="smtpPort" name="smtpPort" class="field" type="number" min="1" max="65535" [(ngModel)]="f.smtpPort" /></div>
+            <div><label class="label" for="smtpEmail">Correo remitente / usuario</label><input id="smtpEmail" name="smtpEmail" class="field" type="email" autocomplete="username" [(ngModel)]="f.smtpEmail" /></div>
+            <div><label class="label" for="smtpPassword">Contraseña o clave de aplicación</label><input id="smtpPassword" name="smtpPassword" class="field" type="password" autocomplete="new-password" placeholder="Vacío conserva la actual" [(ngModel)]="f.smtpPassword" /></div>
+          </div>
+          <label class="mt-5 flex items-center gap-3"><input type="checkbox" name="smtpSsl" [(ngModel)]="f.smtpUseSsl" class="h-4 w-4 accent-forest-800" /><span class="text-sm font-medium text-slate-700">Usar conexión segura TLS/SSL</span></label>
+        </section>
+      </div>
+      <aside class="space-y-5">
+        <section class="overflow-hidden rounded-[24px] bg-forest-950 p-6 text-white shadow-xl"><div class="flex items-center justify-between"><span class="text-xs font-bold uppercase tracking-[.16em] text-harvest-500">Vista previa</span><span class="status-live !border-white/10 !bg-white/10 !text-white"><span class="h-2 w-2 rounded-full bg-emerald-400"></span>Publicado</span></div><p class="mt-8 text-sm text-white/50">Cacao seco</p><strong class="mt-1 block text-5xl tracking-tight">{{ projectedDry() | currency:'USD' }}</strong><p class="mt-1 text-sm text-white/40">por quintal</p><div class="my-6 h-px bg-white/10"></div><div class="flex items-end justify-between"><div><p class="text-sm text-white/50">Cacao en baba</p><strong class="mt-1 block text-3xl text-harvest-500">{{ projectedWet() | currency:'USD' }}</strong></div><span class="text-xs text-white/30">factor {{ f.wetPriceFactor }}</span></div></section>
+        <section class="panel p-6"><div class="flex items-center gap-3"><svg lucideShieldCheck size="21" class="text-emerald-700"></svg><h2 class="font-bold text-slate-900">Estado del proveedor</h2></div><dl class="mt-5 space-y-3 text-sm"><div class="flex justify-between gap-4"><dt class="text-slate-500">Fuente</dt><dd class="text-right font-semibold">{{ f.priceSource }}</dd></div><div class="flex justify-between gap-4"><dt class="text-slate-500">Mercado / TM</dt><dd class="font-semibold">{{ f.currentMarketPricePerMetricTon | currency:'USD' }}</dd></div><div class="flex justify-between gap-4"><dt class="text-slate-500">Precio actualizado</dt><dd class="text-right font-semibold">{{ f.currentPriceUpdatedAtUtc | date:'d MMM, h:mm a' }}</dd></div><div class="flex justify-between gap-4"><dt class="text-slate-500">Última API exitosa</dt><dd class="text-right font-semibold">{{ f.apiLastSuccessAtUtc ? (f.apiLastSuccessAtUtc | date:'d MMM, h:mm a') : 'Aún no conectada' }}</dd></div></dl>@if (f.apiLastError) { <div class="mt-4 rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-800">{{ f.apiLastError }}</div> }</section>
+      </aside>
+    </form>
+  } @else { <div class="mt-8 panel p-10 text-center text-sm text-slate-400">Cargando configuración…</div> }
+</div>
