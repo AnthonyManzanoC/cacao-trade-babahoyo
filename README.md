@@ -47,7 +47,7 @@ Para activarlo:
 
 1. El motor intenta API Ninjas primero. Si `cocoa` requiere plan premium, está caído o responde inválidamente, consulta automáticamente Yahoo Finance con `CC=F` y toma `chart.result[0].meta.regularMarketPrice`.
 2. Entra a **Admin → Configuración**, desactiva **Precio manual**, define el margen por quintal y guarda.
-3. Pulsa **Consultar mercado ahora** para probarlo inmediatamente. Después el servicio se ejecuta con el intervalo configurado; el valor predeterminado es 60 minutos.
+3. Pulsa **Consultar mercado ahora** para probarlo inmediatamente. Después el servicio se ejecuta con el intervalo configurado; el valor predeterminado es 5 minutos. Cuando Yahoo ya es la fuente válida, se prioriza para no consumir la cuota de API Ninjas. Las consultas que no traen una cotización nueva no duplican el historial.
 
 Si las dos fuentes externas fallan, se aplica el **Precio manual de respaldo** configurado; si tampoco existe, el sistema conserva el último precio válido. API Ninjas exige además revisar su licencia para uso comercial.
 

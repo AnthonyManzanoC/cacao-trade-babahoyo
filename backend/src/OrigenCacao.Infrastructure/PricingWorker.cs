@@ -13,7 +13,7 @@ namespace OrigenCacao.Infrastructure;
 public sealed class ApiNinjasOptions
 {
     public string ApiKey { get; set; } = string.Empty;
-    public int RefreshIntervalMinutes { get; set; } = 60;
+    public int RefreshIntervalMinutes { get; set; } = 5;
 }
 
 public sealed class CocoaPriceUpdater(AppDbContext db, IHttpClientFactory httpClientFactory,
@@ -24,6 +24,24 @@ public sealed class CocoaPriceUpdater(AppDbContext db, IHttpClientFactory httpCl
         var settings = await db.BusinessSettings.SingleAsync(x => x.Id == 1, ct);
         if (settings.UseManualPrice) return new(false, null, settings.CurrentDryPricePerQuintal, "El precio manual está activo.");
         var errors = new List<string>();
+
+        // Una vez que Yahoo ha dado una cotización válida, se consulta primero en los ciclos siguientes.
+        // Así no se consume cuota de API Ninjas cuando Yahoo es la fuente que está funcionando.
+        var yahooWasTried = IsYahooFinance(settings.PriceSource);
+        if (yahooWasTried)
+        {
+            try
+            {
+                var quote = await GetYahooQuoteAsync(ct);
+                return await ApplyQuoteAsync(settings, quote, "Yahoo Finance · ICE Cocoa (CC=F)", ct);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Yahoo Finance no disponible; se intentará API Ninjas");
+                errors.Add($"Yahoo Finance: {ex.Message}");
+            }
+        }
+
         try
         {
             var quote = await GetApiNinjasQuoteAsync(ct);
@@ -35,28 +53,38 @@ public sealed class CocoaPriceUpdater(AppDbContext db, IHttpClientFactory httpCl
             errors.Add($"API Ninjas: {ex.Message}");
         }
 
-        try
+        if (!yahooWasTried)
         {
-            var quote = await GetYahooQuoteAsync(ct);
-            return await ApplyQuoteAsync(settings, quote, "Yahoo Finance · ICE Cocoa (CC=F)", ct);
-        }
-        catch (Exception ex)
-        {
-            logger.LogWarning(ex, "Yahoo Finance no disponible; se usará el precio manual de respaldo");
-            errors.Add($"Yahoo Finance: {ex.Message}");
+            try
+            {
+                var quote = await GetYahooQuoteAsync(ct);
+                return await ApplyQuoteAsync(settings, quote, "Yahoo Finance · ICE Cocoa (CC=F)", ct);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Yahoo Finance no disponible; se usará el precio manual de respaldo");
+                errors.Add($"Yahoo Finance: {ex.Message}");
+            }
         }
 
         settings.ApiLastError = $"Fuentes automáticas no disponibles. {string.Join(" | ", errors)}";
         if (settings.ManualDryPricePerQuintal is > 0)
         {
-            settings.CurrentDryPricePerQuintal = decimal.Round(settings.ManualDryPricePerQuintal.Value, 2);
-            settings.CurrentWetPricePerQuintal = decimal.Round(settings.CurrentDryPricePerQuintal * settings.WetPriceFactor, 2);
-            settings.CurrentPriceUpdatedAtUtc = DateTime.UtcNow;
-            settings.PriceSource = "Precio manual de respaldo";
+            var dry = decimal.Round(settings.ManualDryPricePerQuintal.Value, 2);
+            var wet = decimal.Round(dry * settings.WetPriceFactor, 2);
+            var fallbackChanged = settings.PriceSource != "Precio manual de respaldo" ||
+                settings.CurrentDryPricePerQuintal != dry || settings.CurrentWetPricePerQuintal != wet;
+            if (fallbackChanged)
+            {
+                settings.CurrentDryPricePerQuintal = dry;
+                settings.CurrentWetPricePerQuintal = wet;
+                settings.CurrentPriceUpdatedAtUtc = DateTime.UtcNow;
+                settings.PriceSource = "Precio manual de respaldo";
+                db.PriceHistory.Add(new PriceHistory { MarketPricePerMetricTon = settings.CurrentMarketPricePerMetricTon,
+                    DryPricePerQuintal = settings.CurrentDryPricePerQuintal, WetPricePerQuintal = settings.CurrentWetPricePerQuintal,
+                    MarginPerQuintal = settings.MarginPerQuintal, Source = settings.PriceSource, QuotedAtUtc = settings.CurrentPriceUpdatedAtUtc });
+            }
             settings.UpdatedAtUtc = DateTime.UtcNow;
-            db.PriceHistory.Add(new PriceHistory { MarketPricePerMetricTon = settings.CurrentMarketPricePerMetricTon,
-                DryPricePerQuintal = settings.CurrentDryPricePerQuintal, WetPricePerQuintal = settings.CurrentWetPricePerQuintal,
-                MarginPerQuintal = settings.MarginPerQuintal, Source = settings.PriceSource, QuotedAtUtc = settings.CurrentPriceUpdatedAtUtc });
             await db.SaveChangesAsync(ct);
             return new(false, null, settings.CurrentDryPricePerQuintal,
                 "API Ninjas y Yahoo no respondieron; se aplicó el precio manual de respaldo.");
@@ -106,17 +134,29 @@ public sealed class CocoaPriceUpdater(AppDbContext db, IHttpClientFactory httpCl
     private async Task<PriceUpdateResult> ApplyQuoteAsync(BusinessSettings settings, MarketQuote quote,
         string source, CancellationToken ct)
     {
-        var dry = PricingCalculator.CalculateDryPrice(quote.Price, settings.MarginPerQuintal);
-        var wet = decimal.Round(dry * settings.WetPriceFactor, 2);
-        settings.CurrentMarketPricePerMetricTon = quote.Price; settings.CurrentDryPricePerQuintal = dry;
-        settings.CurrentWetPricePerQuintal = wet; settings.CurrentPriceUpdatedAtUtc = quote.QuotedAtUtc;
-        settings.ApiLastSuccessAtUtc = DateTime.UtcNow; settings.ApiLastError = null; settings.PriceSource = source;
+        var hasNewMarketQuote = settings.CurrentMarketPricePerMetricTon <= 0 ||
+            quote.QuotedAtUtc > settings.CurrentPriceUpdatedAtUtc ||
+            (quote.QuotedAtUtc == settings.CurrentPriceUpdatedAtUtc && quote.Price != settings.CurrentMarketPricePerMetricTon);
+        if (hasNewMarketQuote)
+        {
+            var dry = PricingCalculator.CalculateDryPrice(quote.Price, settings.MarginPerQuintal);
+            var wet = decimal.Round(dry * settings.WetPriceFactor, 2);
+            settings.CurrentMarketPricePerMetricTon = quote.Price; settings.CurrentDryPricePerQuintal = dry;
+            settings.CurrentWetPricePerQuintal = wet; settings.CurrentPriceUpdatedAtUtc = quote.QuotedAtUtc;
+            settings.PriceSource = source;
+            db.PriceHistory.Add(new PriceHistory { MarketPricePerMetricTon = quote.Price, DryPricePerQuintal = dry,
+                WetPricePerQuintal = wet, MarginPerQuintal = settings.MarginPerQuintal, Source = source, QuotedAtUtc = quote.QuotedAtUtc });
+        }
+
+        settings.ApiLastSuccessAtUtc = DateTime.UtcNow;
+        settings.ApiLastError = null;
         settings.UpdatedAtUtc = DateTime.UtcNow;
-        db.PriceHistory.Add(new PriceHistory { MarketPricePerMetricTon = quote.Price, DryPricePerQuintal = dry,
-            WetPricePerQuintal = wet, MarginPerQuintal = settings.MarginPerQuintal, Source = source, QuotedAtUtc = quote.QuotedAtUtc });
         await db.SaveChangesAsync(ct);
-        return new(true, quote.Price, dry, $"Precio actualizado desde {source}.");
+        return new(hasNewMarketQuote, settings.CurrentMarketPricePerMetricTon, settings.CurrentDryPricePerQuintal,
+            hasNewMarketQuote ? $"Precio actualizado desde {source}." : $"Consulta exitosa a {source}; la cotización publicada no cambió.");
     }
+
+    private static bool IsYahooFinance(string source) => source.StartsWith("Yahoo Finance", StringComparison.OrdinalIgnoreCase);
 
     private sealed record ApiNinjasQuote([property: JsonPropertyName("price")] decimal Price,
         [property: JsonPropertyName("updated")] long Updated);

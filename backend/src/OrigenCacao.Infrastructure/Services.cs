@@ -299,7 +299,7 @@ public sealed class SettingsService(AppDbContext db, IOptions<ApiNinjasOptions> 
             x.CurrentMarketPricePerMetricTon, x.CurrentPriceUpdatedAtUtc, x.PriceSource, x.UseManualPrice,
             x.ContactWhatsApp, x.ContactAddress, x.ContactPhone, x.ContactEmail, x.GoogleMapsEmbedUrl,
             x.Location, x.PickupEnabled,
-            x.CurrentPriceUpdatedAtUtc.AddMinutes(Math.Clamp(apiOptions.Value.RefreshIntervalMinutes, 5, 1440)));
+            (x.ApiLastSuccessAtUtc ?? x.CurrentPriceUpdatedAtUtc).AddMinutes(Math.Clamp(apiOptions.Value.RefreshIntervalMinutes, 5, 1440)));
     }
     public async Task<IReadOnlyList<PricePointDto>> GetHistoryAsync(int days, CancellationToken ct) => await db.PriceHistory.AsNoTracking()
         .Where(x => x.QuotedAtUtc >= DateTime.UtcNow.AddDays(-Math.Clamp(days, 1, 90))).OrderBy(x => x.QuotedAtUtc)
