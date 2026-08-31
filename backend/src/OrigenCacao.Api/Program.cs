@@ -45,8 +45,10 @@ builder.Services.AddAuthorization();
 
 // AQUÍ ESTÁ EL CAMBIO: Se añadió la URL de Vercel a los orígenes permitidos
 builder.Services.AddCors(options => options.AddPolicy("Frontend", policy => policy
-    .WithOrigins(builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? ["http://localhost:4200", "https://cacao-trade-babahoyo.vercel.app"])
-    .AllowAnyHeader().AllowAnyMethod()));
+    .WithOrigins("https://cacao-trade-babahoyo.vercel.app", "http://localhost:4200")
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()));
 
 builder.Services.AddHealthChecks();
 builder.Services.AddInfrastructure(builder.Configuration);
