@@ -1,7 +1,7 @@
 export type CocoaVariety = 'Nacional' | 'Ccn51' | 'Trinitario' | 'Otro';
 export type CocoaState = 'Baba' | 'Seco';
 export type PaymentMethod = 'Efectivo' | 'Transferencia' | 'Cheque' | 'Otro';
-export type PublicContentSection = 'Hero' | 'Nosotros' | 'Contacto' | 'Servicio' | 'Beneficio' | 'Proceso' | 'Impacto' | 'Testimonio' | 'Galeria' | 'Footer';
+export type PublicContentSection = 'Hero' | 'Nosotros' | 'Contacto' | 'Servicio' | 'Beneficio' | 'Proceso' | 'Impacto' | 'Testimonio' | 'Galeria' | 'Footer' | 'CarruselNosotros';
 export type CashRegisterStatus = 'Abierta' | 'Cerrada';
 export type CashMovementDirection = 'Ingreso' | 'Egreso';
 export type CashMovementCategory = 'CompraCacao' | 'VentaCacao' | 'GastoOperativo' | 'Aporte' | 'Retiro' | 'Ajuste';

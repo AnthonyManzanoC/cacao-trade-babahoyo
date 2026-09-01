@@ -14,7 +14,7 @@ export class SiteContent {
   private readonly api = inject(ApiService);
   readonly items = signal<PublicContent[]>([]); readonly panelOpen = signal(false); readonly saving = signal(false);
   readonly error = signal(''); readonly success = signal(''); readonly sections: PublicContentSection[] = [
-    'Hero', 'Nosotros', 'Servicio', 'Beneficio', 'Proceso', 'Impacto', 'Testimonio', 'Galeria', 'Contacto', 'Footer'
+    'Hero', 'Nosotros', 'CarruselNosotros', 'Servicio', 'Beneficio', 'Proceso', 'Impacto', 'Testimonio', 'Galeria', 'Contacto', 'Footer'
   ];
   form = empty();
   constructor() { this.load(); }
@@ -29,4 +29,5 @@ export class SiteContent {
   }
   remove(item: Pick<PublicContent, 'id' | 'title'>) { if (!confirm(`¿Eliminar el bloque “${item.title}”?`)) return; this.api.deletePublicContent(item.id).subscribe({ next: () => { this.panelOpen.set(false); this.load(); }, error: e => this.error.set(e?.error?.title ?? 'No se pudo eliminar.') }); }
   sectionItems(section: PublicContentSection) { return this.items().filter(x => x.section === section); }
+  sectionLabel(section: PublicContentSection) { return section === 'CarruselNosotros' ? 'Carrusel Nosotros' : section; }
 }

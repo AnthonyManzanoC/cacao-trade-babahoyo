@@ -90,6 +90,26 @@ const aboutFallback = content('nosotros-historia', 'Nosotros', 'Del campo ecuato
   secondaryCtaLabel: 'Crecemos cuando el productor también crece.',
 });
 
+const aboutSlideFallbacks = [
+  content('nosotros-carrusel-alianza', 'CarruselNosotros', 'Productores aliados en el campo', {
+    eyebrow: 'Comunidad',
+    subtitle: 'Relaciones que crecen junto a cada cosecha.',
+    imageUrl: '/cacao-productores-alianza.png',
+  }),
+  content('nosotros-carrusel-pesaje', 'CarruselNosotros', 'Pesaje claro frente al productor', {
+    eyebrow: 'Transparencia',
+    subtitle: 'Cada valor se comprueba en el centro de acopio.',
+    imageUrl: '/cacao-pesaje-transparente.png',
+    displayOrder: 1,
+  }),
+  content('nosotros-carrusel-origen', 'CarruselNosotros', 'Cacao ecuatoriano seleccionado', {
+    eyebrow: 'Origen',
+    subtitle: 'El valor de cada lote comienza en el campo.',
+    imageUrl: '/cacao-hero.png',
+    displayOrder: 2,
+  }),
+];
+
 const serviceFallbacks = [
   content('servicio-compra', 'Servicio', 'Recepción de cacao en baba y seco', { eyebrow: 'Compra directa', subtitle: 'Pesaje transparente y comprobante detallado.', body: 'Evaluamos humedad y merma, aplicamos el precio vigente y entregamos respaldo por cada compra.', icon: 'scale' }),
   content('servicio-secado', 'Servicio', 'Secado y manejo por lotes', { eyebrow: 'Valor agregado', subtitle: 'Control de rendimiento de baba a seco.', body: 'Conservamos la trazabilidad y el costo real de cada lote durante el proceso.', icon: 'sun', displayOrder: 1 }),
@@ -180,6 +200,7 @@ export class PublicHome {
   readonly content = signal<PublicContent[]>([]);
   readonly now = signal(new Date());
   readonly activeHero = signal(0);
+  readonly activeAboutSlide = signal(0);
   readonly activeTestimonial = signal(0);
   readonly activeGallery = signal(0);
   readonly currentYear = new Date().getFullYear();
@@ -212,6 +233,11 @@ export class PublicHome {
   readonly heroSlides = computed(() => this.section('Hero', heroFallbacks));
   readonly hero = computed(() => this.heroSlides()[this.activeHero() % this.heroSlides().length] ?? heroFallbacks[0]);
   readonly about = computed(() => this.section('Nosotros', [aboutFallback])[0] ?? aboutFallback);
+  readonly aboutSlides = computed(() => this.section('CarruselNosotros', aboutSlideFallbacks).map((slide, index) => ({
+    ...slide,
+    imageUrl: slide.imageUrl?.trim() || aboutSlideFallbacks[index % aboutSlideFallbacks.length].imageUrl,
+  })));
+  readonly aboutSlide = computed(() => this.aboutSlides()[this.activeAboutSlide() % this.aboutSlides().length] ?? aboutSlideFallbacks[0]);
   readonly serviceIntro = computed(() => this.intro('Servicio', content('servicio-intro', 'Servicio', 'Un aliado para hacer crecer cada cosecha.', { eyebrow: 'Más que comprar cacao', subtitle: 'Acompañamos a pequeños productores con procesos claros, logística cercana y una relación que se construye lote a lote.' })));
   readonly services = computed(() => this.cards('Servicio', serviceFallbacks).slice(0, 6));
   readonly benefitIntro = computed(() => this.intro('Beneficio', content('beneficio-intro', 'Beneficio', 'Claridad desde que llegas hasta que recibes tu pago', { eyebrow: 'Lo que puedes esperar', subtitle: 'Una compra bien hecha se nota en cada paso.' })));
@@ -254,6 +280,7 @@ export class PublicHome {
     });
     timer(0, 1000).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.now.set(new Date()));
     timer(8000, 8000).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.moveHero(1));
+    timer(6500, 6500).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.moveAboutSlide(1));
   }
 
   selectState(state: 'Seco' | 'Baba') {
@@ -264,6 +291,8 @@ export class PublicHome {
   updateAmount(value: number) { this.amount.set(Number(value)); }
   moveHero(direction: number) { this.activeHero.update(value => this.wrap(value + direction, this.heroSlides().length)); }
   selectHero(index: number) { this.activeHero.set(index); }
+  moveAboutSlide(direction: number) { this.activeAboutSlide.update(value => this.wrap(value + direction, this.aboutSlides().length)); }
+  selectAboutSlide(index: number) { this.activeAboutSlide.set(index); }
   moveTestimonial(direction: number) { this.activeTestimonial.update(value => this.wrap(value + direction, this.testimonials().length)); }
   moveGallery(direction: number) { this.activeGallery.update(value => this.wrap(value + direction, this.gallery().length)); }
 

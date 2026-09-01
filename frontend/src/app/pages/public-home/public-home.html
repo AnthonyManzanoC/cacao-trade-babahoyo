@@ -119,8 +119,17 @@
     <section id="nosotros" class="scroll-mt-24 py-24 lg:py-32">
       <div class="mx-auto grid max-w-[1340px] items-center gap-14 px-5 lg:grid-cols-[1.02fr_.98fr] lg:px-10">
         <div class="relative">
-          <div class="overflow-hidden rounded-[34px] bg-cream-100 shadow-[0_30px_80px_rgba(9,38,31,.14)]"><img [src]="about().imageUrl || '/cacao-productores-alianza.png'" [alt]="about().title" class="aspect-[4/3] w-full object-cover" /></div>
-          <div class="absolute -bottom-7 right-4 max-w-[250px] rounded-3xl bg-harvest-500 p-6 text-forest-950 shadow-xl sm:right-8"><svg lucideSprout size="27"></svg><strong class="mt-4 block text-xl leading-tight">{{ about().secondaryCtaLabel || 'Crecemos cuando el productor también crece.' }}</strong></div>
+          <div class="group relative overflow-hidden rounded-[34px] bg-cream-100 shadow-[0_30px_80px_rgba(9,38,31,.14)]">
+            <img [src]="aboutSlide().imageUrl" [alt]="aboutSlide().title" class="aspect-[4/3] w-full object-cover" />
+            @if (aboutSlides().length > 1) {
+              <button type="button" (click)="moveAboutSlide(-1)" class="absolute left-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-white/30 bg-forest-950/55 text-white shadow-lg backdrop-blur transition hover:bg-forest-950/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:top-1/2 sm:-translate-y-1/2" aria-label="Imagen anterior de Nosotros"><svg lucideChevronLeft size="21"></svg></button>
+              <button type="button" (click)="moveAboutSlide(1)" class="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-white/30 bg-forest-950/55 text-white shadow-lg backdrop-blur transition hover:bg-forest-950/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:top-1/2 sm:-translate-y-1/2" aria-label="Imagen siguiente de Nosotros"><svg lucideChevronRight size="21"></svg></button>
+              <div class="absolute left-1/2 top-5 flex -translate-x-1/2 items-center gap-2 rounded-full bg-forest-950/50 px-3 py-2 backdrop-blur sm:bottom-4 sm:top-auto" aria-label="Seleccionar imagen de Nosotros">
+                @for (slide of aboutSlides(); track slide.id || slide.contentKey; let index = $index) { <button type="button" (click)="selectAboutSlide(index)" class="h-2 rounded-full bg-white transition-all" [class.w-6]="activeAboutSlide() === index" [class.w-2]="activeAboutSlide() !== index" [class.opacity-50]="activeAboutSlide() !== index" [attr.aria-label]="'Mostrar imagen ' + (index + 1) + ' de Nosotros'" [attr.aria-current]="activeAboutSlide() === index ? 'true' : null"></button> }
+              </div>
+            }
+          </div>
+          <div class="absolute -bottom-7 right-4 z-10 max-w-[250px] rounded-3xl bg-harvest-500 p-6 text-forest-950 shadow-xl sm:right-8"><svg lucideSprout size="27"></svg><strong class="mt-4 block text-xl leading-tight">{{ about().secondaryCtaLabel || 'Crecemos cuando el productor también crece.' }}</strong></div>
         </div>
         <div class="pt-7 lg:pl-8 lg:pt-0">
           <p class="eyebrow">{{ about().eyebrow }}</p>

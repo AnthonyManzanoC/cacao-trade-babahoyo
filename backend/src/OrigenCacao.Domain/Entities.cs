@@ -22,7 +22,8 @@ public enum PublicContentSection
     Impacto,
     Testimonio,
     Galeria,
-    Footer
+    Footer,
+    CarruselNosotros
 }
 public enum CashRegisterStatus { Abierta, Cerrada }
 public enum CashMovementDirection { Ingreso, Egreso }
