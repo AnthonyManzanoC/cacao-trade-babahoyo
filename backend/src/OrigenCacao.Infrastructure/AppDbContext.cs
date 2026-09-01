@@ -66,6 +66,9 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             Decimal(e, x => x.MarginPerQuintal); Decimal(e, x => x.WetPriceFactor, 8, 4);
             Decimal(e, x => x.ManualDryPricePerQuintal); Decimal(e, x => x.CurrentMarketPricePerMetricTon);
             Decimal(e, x => x.CurrentDryPricePerQuintal); Decimal(e, x => x.CurrentWetPricePerQuintal);
+            e.Property(x => x.LogoUrl).HasMaxLength(1200);
+            e.Property(x => x.PriceClockLabel).HasMaxLength(80);
+            e.Property(x => x.TimeZone).HasMaxLength(120);
             e.Property(x => x.ContactAddress).HasMaxLength(400);
             e.Property(x => x.ContactPhone).HasMaxLength(40);
             e.Property(x => x.ContactEmail).HasMaxLength(180);

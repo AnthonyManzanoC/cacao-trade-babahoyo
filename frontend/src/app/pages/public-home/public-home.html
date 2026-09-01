@@ -1,51 +1,80 @@
-<div class="min-h-screen bg-cream-50 text-forest-950">
-  <header class="absolute inset-x-0 top-0 z-20 border-b border-white/10">
-    <nav class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8" aria-label="Navegación principal">
+<div class="min-h-screen overflow-x-hidden bg-cream-50 text-forest-950">
+  <header class="absolute inset-x-0 top-0 z-40 border-b border-white/10 bg-forest-950/20 backdrop-blur-sm">
+    <nav class="mx-auto flex h-24 max-w-[1440px] items-center justify-between px-5 lg:px-10" aria-label="Navegación principal">
       <a routerLink="/" class="flex items-center gap-3 text-white">
-        <span class="grid h-10 w-10 place-items-center rounded-2xl bg-harvest-500 text-forest-950 shadow-lg shadow-black/15"><svg lucideSprout size="22"></svg></span>
-        <span><strong class="block text-[15px] tracking-wide">{{ price().businessName | uppercase }}</strong><small class="block text-[10px] uppercase tracking-[.24em] text-white/60">Compra justa</small></span>
+        <span class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl bg-white/95 p-1.5 shadow-xl shadow-black/20">
+          <img [src]="price().logoUrl || '/grupo-alvarez-cacao-logo.png'" [alt]="'Logo de ' + price().businessName" class="h-full w-full object-contain" />
+        </span>
+        <span><strong class="block text-base tracking-wide">{{ price().businessName | uppercase }}</strong><small class="block text-[10px] uppercase tracking-[.25em] text-harvest-500">Compra justa de cacao</small></span>
       </a>
-      <div class="hidden items-center gap-8 text-sm font-medium text-white/80 md:flex">
-        <a routerLink="/precios" class="transition hover:text-white">Precio de hoy</a>
-        <a routerLink="/servicios" class="transition hover:text-white">Servicios</a>
-        <a routerLink="/nosotros" class="transition hover:text-white">Nosotros</a>
-        <a routerLink="/contacto" class="transition hover:text-white">Contacto</a>
+      <div class="hidden items-center gap-8 text-sm font-semibold text-white/75 lg:flex">
+        <a href="#precio" class="transition hover:text-white">Precio de hoy</a>
+        <a href="#nosotros" class="transition hover:text-white">Nosotros</a>
+        <a href="#servicios" class="transition hover:text-white">Servicios</a>
+        <a href="#impacto" class="transition hover:text-white">Impacto</a>
+        <a href="#contacto" class="transition hover:text-white">Contacto</a>
       </div>
-      <a routerLink="/admin/login" class="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/20">Ingreso administrativo</a>
+      <div class="hidden items-center gap-3 lg:flex">
+        <a [href]="whatsappLink()" target="_blank" rel="noopener" class="rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20">Vender mi cacao</a>
+        <a routerLink="/admin/login" class="rounded-full bg-harvest-500 px-5 py-2.5 text-xs font-bold text-forest-950 transition hover:bg-amber-400">Administración</a>
+      </div>
+      <button type="button" class="grid h-11 w-11 place-items-center rounded-xl border border-white/20 bg-white/10 text-white lg:hidden" (click)="menuOpen.set(!menuOpen())" [attr.aria-label]="menuOpen() ? 'Cerrar menú' : 'Abrir menú'">
+        @if (menuOpen()) { <svg lucideX size="22"></svg> } @else { <svg lucideMenu size="22"></svg> }
+      </button>
     </nav>
+    @if (menuOpen()) {
+      <div class="border-t border-white/10 bg-forest-950 px-5 py-5 text-white shadow-2xl lg:hidden">
+        <div class="grid gap-1 text-sm font-semibold text-white/75">
+          <a href="#precio" class="rounded-xl px-3 py-3 hover:bg-white/8" (click)="menuOpen.set(false)">Precio de hoy</a>
+          <a href="#nosotros" class="rounded-xl px-3 py-3 hover:bg-white/8" (click)="menuOpen.set(false)">Nosotros</a>
+          <a href="#servicios" class="rounded-xl px-3 py-3 hover:bg-white/8" (click)="menuOpen.set(false)">Servicios</a>
+          <a href="#impacto" class="rounded-xl px-3 py-3 hover:bg-white/8" (click)="menuOpen.set(false)">Impacto</a>
+          <a href="#contacto" class="rounded-xl px-3 py-3 hover:bg-white/8" (click)="menuOpen.set(false)">Contacto</a>
+        </div>
+      </div>
+    }
   </header>
 
   <main>
-    <section id="inicio" class="relative min-h-[760px] overflow-hidden bg-forest-950 pt-20 lg:min-h-[820px]">
-      <img [src]="hero().imageUrl || '/cacao-hero.png'" alt="Cacao fresco cosechado en una finca ecuatoriana" class="absolute inset-0 h-full w-full object-cover object-center" />
-      <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,27,21,.98)_0%,rgba(9,38,31,.92)_38%,rgba(9,38,31,.24)_75%,rgba(9,38,31,.05)_100%)]"></div>
-      <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 lg:min-h-[740px] lg:grid-cols-[1.08fr_.92fr] lg:px-8">
-        <div class="max-w-2xl pt-7 text-white">
-          <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3.5 py-2 text-xs font-semibold text-white/90 backdrop-blur">
+    <section id="inicio" class="relative min-h-[940px] overflow-hidden bg-forest-950 pt-24 lg:min-h-[900px]">
+      <img [src]="hero().imageUrl || '/cacao-hero.png'" [alt]="hero().title" class="absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-700" />
+      <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,25,19,.98)_0%,rgba(6,37,28,.91)_42%,rgba(6,37,28,.34)_73%,rgba(6,37,28,.12)_100%)]"></div>
+      <div class="absolute inset-0 bg-[linear-gradient(0deg,rgba(4,25,19,.9)_0%,transparent_38%)]"></div>
+      <div class="relative mx-auto grid max-w-[1440px] items-center gap-12 px-5 py-14 lg:min-h-[790px] lg:grid-cols-[1.05fr_.95fr] lg:px-10 lg:py-16">
+        <div class="max-w-3xl pt-6 text-white lg:pt-0">
+          <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-semibold text-white/90 backdrop-blur">
             <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_5px_rgba(52,211,153,.12)]"></span>
             Centro de acopio · {{ price().location }}
           </div>
           <p class="eyebrow mb-5 !text-harvest-500">{{ hero().eyebrow }}</p>
-          <h1 class="max-w-xl text-5xl font-semibold leading-[1.02] tracking-[-.045em] sm:text-6xl lg:text-7xl">{{ hero().title }}</h1>
-          <p class="mt-7 max-w-xl text-base leading-7 text-white/70 sm:text-lg">{{ hero().subtitle }} {{ hero().body }}</p>
+          <h1 class="max-w-3xl text-5xl font-semibold leading-[.98] tracking-[-.052em] sm:text-6xl lg:text-[78px]">{{ hero().title }}</h1>
+          <p class="mt-7 max-w-2xl text-base leading-8 text-white/72 sm:text-lg">{{ hero().subtitle }} <span class="text-white">{{ hero().body }}</span></p>
           <div class="mt-9 flex flex-wrap gap-3">
-            <a [href]="hero().primaryCtaUrl || '#precio'" class="inline-flex min-h-12 items-center gap-2 rounded-xl bg-harvest-500 px-6 font-bold text-forest-950 shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:bg-amber-400">{{ hero().primaryCtaLabel || 'Calcular mi venta' }} <svg lucideArrowRight size="19"></svg></a>
-            <a [href]="hero().secondaryCtaUrl && hero().secondaryCtaUrl !== '#whatsapp' ? hero().secondaryCtaUrl : whatsappLink()" target="_blank" rel="noopener" class="inline-flex min-h-12 items-center rounded-xl border border-white/20 bg-white/10 px-6 font-semibold text-white backdrop-blur transition hover:bg-white/20">{{ hero().secondaryCtaLabel || 'Hablar por WhatsApp' }}</a>
+            <a [href]="resolveLink(hero().primaryCtaUrl)" class="inline-flex min-h-13 items-center gap-2 rounded-xl bg-harvest-500 px-6 font-bold text-forest-950 shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:bg-amber-400">{{ hero().primaryCtaLabel || 'Calcular mi venta' }} <svg lucideArrowRight size="19"></svg></a>
+            <a [href]="resolveLink(hero().secondaryCtaUrl)" [attr.target]="hero().secondaryCtaUrl === '#whatsapp' ? '_blank' : null" rel="noopener" class="inline-flex min-h-13 items-center rounded-xl border border-white/20 bg-white/10 px-6 font-semibold text-white backdrop-blur transition hover:bg-white/20">{{ hero().secondaryCtaLabel || 'Hablar por WhatsApp' }}</a>
           </div>
           <div class="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm text-white/65">
             <span class="flex items-center gap-2"><svg lucideCheck size="17" class="text-emerald-400"></svg> Peso transparente</span>
-            <span class="flex items-center gap-2"><svg lucideCheck size="17" class="text-emerald-400"></svg> Pago el mismo día</span>
+            <span class="flex items-center gap-2"><svg lucideCheck size="17" class="text-emerald-400"></svg> Pago responsable</span>
             <span class="flex items-center gap-2"><svg lucideCheck size="17" class="text-emerald-400"></svg> Compra directa</span>
           </div>
         </div>
 
-        <aside id="precio" class="justify-self-end w-full max-w-[470px] scroll-mt-24 rounded-[28px] border border-white/20 bg-white/95 p-3 shadow-2xl shadow-black/30 backdrop-blur-xl">
-          <div class="rounded-[22px] bg-cream-50 p-6 sm:p-7">
-            <div class="flex items-start justify-between gap-4">
+        <aside id="precio" class="w-full max-w-[500px] scroll-mt-28 justify-self-end rounded-[30px] border border-white/25 bg-white/94 p-3 shadow-2xl shadow-black/35 backdrop-blur-xl">
+          <div class="rounded-[23px] bg-cream-50 p-5 sm:p-7">
+            <div class="grid grid-cols-[1fr_auto] items-start gap-4">
               <div><p class="eyebrow">Precio de compra</p><h2 class="mt-1 text-xl font-bold text-forest-950">Marcador de hoy</h2></div>
-              <span class="status-live"><span class="h-2 w-2 rounded-full" [class.bg-emerald-500]="online()" [class.bg-amber-500]="!online()"></span>{{ online() ? 'Actualizado' : 'Modo respaldo' }}</span>
+              <div class="rounded-2xl border border-forest-900/10 bg-white px-3.5 py-2.5 text-right shadow-sm" aria-live="polite">
+                <div class="flex items-center justify-end gap-1.5 text-[10px] font-bold uppercase tracking-[.12em] text-harvest-600"><svg lucideClock3 size="13"></svg>{{ price().priceClockLabel || 'Hora Ecuador' }}</div>
+                <strong class="mt-0.5 block font-mono text-lg tracking-tight text-forest-950">{{ clockTime() }}</strong>
+                <small class="block capitalize text-[10px] text-slate-400">{{ clockDate() }}</small>
+              </div>
             </div>
-            <div class="mt-7 grid grid-cols-2 gap-3">
+            <div class="mt-4 flex items-center justify-between gap-3">
+              <span class="status-live"><span class="h-2 w-2 rounded-full" [class.bg-emerald-500]="online()" [class.bg-amber-500]="!online()"></span>{{ online() ? 'Actualizado' : 'Modo respaldo' }}</span>
+              <small class="text-right text-[10px] text-slate-400">Zona: {{ price().timeZone || 'America/Guayaquil' }}</small>
+            </div>
+            <div class="mt-6 grid grid-cols-2 gap-3">
               <button type="button" (click)="selectState('Seco')" class="rounded-2xl border p-4 text-left transition" [class.border-forest-900]="selectedState() === 'Seco'" [class.bg-forest-900]="selectedState() === 'Seco'" [class.text-white]="selectedState() === 'Seco'" [class.border-black/8]="selectedState() !== 'Seco'" [class.bg-white]="selectedState() !== 'Seco'">
                 <span class="text-xs font-semibold uppercase tracking-wider opacity-60">Cacao seco</span>
                 <strong class="mt-2 block text-3xl tracking-tight">{{ price().dryPricePerQuintal | currency:'USD':'symbol':'1.2-2' }}</strong>
@@ -67,40 +96,131 @@
               <p class="mt-2 text-xs leading-5 text-white/50">Estimado antes de tara, humedad y merma medidos al recibir el lote.</p>
             </div>
             <a [href]="whatsappLink()" target="_blank" rel="noopener" class="btn-primary mt-4 w-full">Quiero vender mi cacao <svg lucideArrowRight size="17"></svg></a>
-            <p class="mt-4 text-center text-[11px] text-slate-400">Última actualización: {{ price().updatedAtUtc | date:'d MMM, h:mm a' }} · {{ price().source }}</p>
+            <p class="mt-4 text-center text-[11px] leading-4 text-slate-400">Última actualización: {{ price().updatedAtUtc | date:'d MMM, h:mm a' }} · {{ price().source }}</p>
           </div>
         </aside>
       </div>
-    </section>
-
-    <section id="servicios" class="mx-auto max-w-7xl px-5 py-24 lg:px-8">
-      <div class="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
-        <div><p class="eyebrow">Más que comprar cacao</p><h2 class="mt-4 text-4xl font-semibold tracking-[-.035em] text-forest-950 md:text-5xl">Un aliado para hacer crecer cada cosecha.</h2></div>
-        <p class="max-w-2xl text-lg leading-8 text-slate-600">Acompañamos a pequeños productores con procesos claros, logística cercana y una relación que se construye lote a lote.</p>
-      </div>
-      <div class="mt-12 grid gap-5 md:grid-cols-3">
-        @for (service of services(); track service.id || service.contentKey) { <article class="panel group p-7 transition hover:-translate-y-1 hover:shadow-xl"><span class="grid h-12 w-12 place-items-center rounded-2xl bg-emerald-50 text-forest-800">@if (service.icon === 'truck') { <svg lucideTruck size="24"></svg> } @else if (service.icon === 'scale') { <svg lucideScale size="24"></svg> } @else { <svg lucideShieldCheck size="24"></svg> }</span><p class="eyebrow mt-6">{{ service.eyebrow }}</p><h3 class="mt-2 text-xl font-bold">{{ service.title }}</h3><p class="mt-3 leading-7 text-slate-600">{{ service.subtitle }} {{ service.body }}</p></article> }
+      <div class="relative mx-auto flex max-w-[1440px] items-center justify-between gap-5 px-5 pb-8 lg:px-10">
+        <div class="flex items-center gap-2">
+          @for (slide of heroSlides(); track slide.id || slide.contentKey; let index = $index) {
+            <button type="button" (click)="selectHero(index)" class="h-2.5 rounded-full transition-all" [class.w-9]="activeHero() === index" [class.w-2.5]="activeHero() !== index" [class.bg-harvest-500]="activeHero() === index" [class.bg-white/35]="activeHero() !== index" [attr.aria-label]="'Ver diapositiva ' + (index + 1)"></button>
+          }
+        </div>
+        <div class="flex gap-2"><button type="button" (click)="moveHero(-1)" class="grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur hover:bg-white/20" aria-label="Diapositiva anterior"><svg lucideChevronLeft size="21"></svg></button><button type="button" (click)="moveHero(1)" class="grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur hover:bg-white/20" aria-label="Diapositiva siguiente"><svg lucideChevronRight size="21"></svg></button></div>
       </div>
     </section>
 
-    <section id="nosotros" class="bg-forest-950 py-20 text-white">
-      <div class="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-2 lg:px-8">
-        <div><p class="eyebrow !text-harvest-500">{{ about().eyebrow }}</p><h2 class="mt-4 text-4xl font-semibold tracking-tight">{{ about().title }}</h2><p class="mt-5 max-w-xl leading-7 text-white/60">{{ about().subtitle }} {{ about().body }}</p></div>
-        <ol class="grid gap-4">
-          <li class="flex gap-5 rounded-2xl border border-white/10 bg-white/5 p-5"><span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-harvest-500 font-bold text-forest-950">1</span><div><strong>Coordina tu entrega</strong><p class="mt-1 text-sm leading-6 text-white/60">Escríbenos y cuéntanos tipo, estado y cantidad aproximada.</p></div></li>
-          <li class="flex gap-5 rounded-2xl border border-white/10 bg-white/5 p-5"><span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-harvest-500 font-bold text-forest-950">2</span><div><strong>Medimos contigo</strong><p class="mt-1 text-sm leading-6 text-white/60">Pesamos y comprobamos calidad, humedad y merma frente a ti.</p></div></li>
-          <li class="flex gap-5 rounded-2xl border border-white/10 bg-white/5 p-5"><span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-harvest-500 font-bold text-forest-950">3</span><div><strong>Recibe tu pago</strong><p class="mt-1 text-sm leading-6 text-white/60">Confirmamos el cálculo y pagamos por el método acordado.</p></div></li>
-        </ol>
+    <section class="relative z-10 -mt-1 border-b border-black/6 bg-white">
+      <div class="mx-auto grid max-w-[1440px] divide-y divide-black/6 px-5 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4 lg:px-10">
+        @for (item of trustItems(); track item.id || item.contentKey) { <div class="flex items-center gap-4 py-6 sm:px-6"><span class="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-50 text-forest-800">@if (item.icon === 'price') { <svg lucideBadgeDollarSign size="21"></svg> } @else if (item.icon === 'truck') { <svg lucideTruck size="21"></svg> } @else if (item.icon === 'scale') { <svg lucideScale size="21"></svg> } @else { <svg lucideShieldCheck size="21"></svg> }</span><div><strong class="block text-sm">{{ item.eyebrow || item.title }}</strong><small class="line-clamp-2 text-slate-500">{{ item.subtitle }}</small></div></div> }
       </div>
     </section>
-    @if (contact(); as contactBlock) { <section class="mx-auto max-w-7xl px-5 py-20 lg:px-8"><div class="overflow-hidden rounded-[32px] bg-harvest-500 p-8 text-forest-950 md:p-12"><div class="grid items-center gap-8 md:grid-cols-[1fr_auto]"><div><p class="eyebrow !text-forest-800">{{ contactBlock.eyebrow }}</p><h2 class="mt-3 text-4xl font-semibold tracking-tight">{{ contactBlock.title }}</h2><p class="mt-4 max-w-2xl leading-7 text-forest-900/70">{{ contactBlock.subtitle }} {{ contactBlock.body }}</p></div><a [href]="contactBlock.primaryCtaUrl && contactBlock.primaryCtaUrl !== '#whatsapp' ? contactBlock.primaryCtaUrl : whatsappLink()" target="_blank" rel="noopener" class="inline-flex min-h-12 items-center justify-center rounded-xl bg-forest-950 px-7 font-bold text-white">{{ contactBlock.primaryCtaLabel || 'Abrir WhatsApp' }}</a></div></div></section> }
+
+    <section id="nosotros" class="scroll-mt-24 py-24 lg:py-32">
+      <div class="mx-auto grid max-w-[1340px] items-center gap-14 px-5 lg:grid-cols-[1.02fr_.98fr] lg:px-10">
+        <div class="relative">
+          <div class="overflow-hidden rounded-[34px] bg-cream-100 shadow-[0_30px_80px_rgba(9,38,31,.14)]"><img [src]="about().imageUrl || '/cacao-productores-alianza.png'" [alt]="about().title" class="aspect-[4/3] w-full object-cover" /></div>
+          <div class="absolute -bottom-7 right-4 max-w-[250px] rounded-3xl bg-harvest-500 p-6 text-forest-950 shadow-xl sm:right-8"><svg lucideSprout size="27"></svg><strong class="mt-4 block text-xl leading-tight">{{ about().secondaryCtaLabel || 'Crecemos cuando el productor también crece.' }}</strong></div>
+        </div>
+        <div class="pt-7 lg:pl-8 lg:pt-0">
+          <p class="eyebrow">{{ about().eyebrow }}</p>
+          <h2 class="mt-4 text-4xl font-semibold leading-[1.05] tracking-[-.045em] md:text-6xl">{{ about().title }}</h2>
+          <p class="mt-6 text-xl leading-8 text-forest-900">{{ about().subtitle }}</p>
+          <p class="mt-5 whitespace-pre-line leading-8 text-slate-600">{{ about().body }}</p>
+          <div class="mt-8 grid gap-3 sm:grid-cols-2"><span class="flex items-center gap-3 rounded-2xl bg-cream-100 p-4 text-sm font-semibold"><svg lucideCheck size="18" class="text-emerald-700"></svg>{{ benefits()[0]?.eyebrow || 'Precio visible' }}</span><span class="flex items-center gap-3 rounded-2xl bg-cream-100 p-4 text-sm font-semibold"><svg lucideCheck size="18" class="text-emerald-700"></svg>{{ benefits()[1]?.eyebrow || 'Proceso abierto' }}</span></div>
+          @if (about().primaryCtaLabel) { <a [href]="resolveLink(about().primaryCtaUrl)" class="mt-8 inline-flex items-center gap-2 font-bold text-forest-800 hover:text-harvest-600">{{ about().primaryCtaLabel }} <svg lucideArrowRight size="18"></svg></a> }
+        </div>
+      </div>
+    </section>
+
+    <section id="servicios" class="scroll-mt-24 bg-forest-950 py-24 text-white lg:py-28">
+      <div class="mx-auto max-w-[1340px] px-5 lg:px-10">
+        <div class="grid gap-8 lg:grid-cols-[.9fr_1.1fr] lg:items-end">
+          <div><p class="eyebrow !text-harvest-500">{{ serviceIntro().eyebrow }}</p><h2 class="mt-4 text-4xl font-semibold leading-tight tracking-[-.04em] md:text-5xl">{{ serviceIntro().title }}</h2></div>
+          <p class="max-w-2xl text-lg leading-8 text-white/58">{{ serviceIntro().subtitle }} {{ serviceIntro().body }}</p>
+        </div>
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          @for (service of services(); track service.id || service.contentKey) {
+            <article class="group rounded-[26px] border border-white/10 bg-white/5 p-7 transition hover:-translate-y-1 hover:border-harvest-500/40 hover:bg-white/8">
+              <span class="grid h-13 w-13 place-items-center rounded-2xl bg-harvest-500 text-forest-950">@if (service.icon === 'truck') { <svg lucideTruck size="25"></svg> } @else if (service.icon === 'scale') { <svg lucideScale size="25"></svg> } @else { <svg lucideLeaf size="25"></svg> }</span>
+              <p class="eyebrow mt-7 !text-harvest-500">{{ service.eyebrow }}</p><h3 class="mt-3 text-2xl font-bold">{{ service.title }}</h3><p class="mt-3 text-white/55">{{ service.subtitle }}</p><p class="mt-4 leading-7 text-white/65">{{ service.body }}</p>
+            </article>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-cream-100 py-24 lg:py-28">
+      <div class="mx-auto max-w-[1340px] px-5 lg:px-10">
+        <div class="mx-auto max-w-3xl text-center"><p class="eyebrow">{{ benefitIntro().eyebrow }}</p><h2 class="mt-4 text-4xl font-semibold leading-tight tracking-[-.04em] md:text-5xl">{{ benefitIntro().title }}</h2><p class="mt-5 text-lg leading-8 text-slate-600">{{ benefitIntro().subtitle }} {{ benefitIntro().body }}</p></div>
+        <div class="mt-12 grid gap-6 md:grid-cols-3">
+          @for (benefit of benefits(); track benefit.id || benefit.contentKey) {
+            <article class="rounded-[28px] border border-black/6 bg-white p-7 shadow-[0_12px_40px_rgba(9,38,31,.07)]">
+              <span class="grid h-12 w-12 place-items-center rounded-2xl bg-forest-900 text-white">@if (benefit.icon === 'scale') { <svg lucideScale size="23"></svg> } @else if (benefit.icon === 'price') { <svg lucideBadgeDollarSign size="23"></svg> } @else { <svg lucideShieldCheck size="23"></svg> }</span>
+              <p class="eyebrow mt-7">{{ benefit.eyebrow }}</p><h3 class="mt-3 text-2xl font-bold tracking-tight">{{ benefit.title }}</h3><p class="mt-3 font-medium text-forest-800">{{ benefit.subtitle }}</p><p class="mt-4 leading-7 text-slate-600">{{ benefit.body }}</p>
+            </article>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="impacto" class="relative scroll-mt-24 overflow-hidden py-24 text-white lg:py-32">
+      <img src="/cacao-productores-alianza.png" alt="Productores de cacao aliados" class="absolute inset-0 h-full w-full object-cover" />
+      <div class="absolute inset-0 bg-forest-950/90"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_15%_50%,rgba(237,148,31,.25),transparent_32%)]"></div>
+      <div class="relative mx-auto grid max-w-[1340px] gap-12 px-5 lg:grid-cols-[.85fr_1.15fr] lg:items-center lg:px-10">
+        <div><p class="eyebrow !text-harvest-500">{{ impactIntro().eyebrow }}</p><h2 class="mt-4 text-4xl font-semibold leading-tight tracking-[-.04em] md:text-5xl">{{ impactIntro().title }}</h2><p class="mt-5 max-w-xl text-lg leading-8 text-white/60">{{ impactIntro().subtitle }} {{ impactIntro().body }}</p></div>
+        <div class="grid gap-4 sm:grid-cols-3">
+          @for (stat of impactStats(); track stat.id || stat.contentKey) { <article class="rounded-[26px] border border-white/12 bg-white/8 p-6 backdrop-blur"><strong class="block text-4xl font-semibold tracking-tight text-harvest-500">{{ stat.eyebrow }}</strong><h3 class="mt-3 text-lg font-bold">{{ stat.title }}</h3><p class="mt-2 text-sm leading-6 text-white/55">{{ stat.subtitle }} {{ stat.body }}</p></article> }
+        </div>
+      </div>
+    </section>
+
+    <section id="proceso" class="scroll-mt-24 py-24 lg:py-28">
+      <div class="mx-auto max-w-[1340px] px-5 lg:px-10">
+        <div class="mx-auto max-w-3xl text-center"><p class="eyebrow">{{ processIntro().eyebrow }}</p><h2 class="mt-4 text-4xl font-semibold tracking-[-.04em] md:text-5xl">{{ processIntro().title }}</h2><p class="mt-5 text-lg text-slate-600">{{ processIntro().subtitle }} {{ processIntro().body }}</p></div>
+        <div class="relative mt-14 grid gap-6 md:grid-cols-3">
+          <div class="absolute left-[16%] right-[16%] top-10 hidden h-px bg-forest-900/15 md:block"></div>
+          @for (step of processSteps(); track step.id || step.contentKey) {
+            <article class="relative text-center"><span class="relative z-10 mx-auto grid h-20 w-20 place-items-center rounded-full border-8 border-cream-50 bg-harvest-500 text-xl font-bold text-forest-950 shadow-lg">{{ step.eyebrow }}</span><h3 class="mt-6 text-2xl font-bold">{{ step.title }}</h3><p class="mt-3 font-medium text-forest-800">{{ step.subtitle }}</p><p class="mx-auto mt-3 max-w-sm leading-7 text-slate-600">{{ step.body }}</p></article>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-cream-100 py-24 lg:py-28">
+      <div class="mx-auto grid max-w-[1340px] items-center gap-12 px-5 lg:grid-cols-[.8fr_1.2fr] lg:px-10">
+        <div><p class="eyebrow">{{ testimonialIntro().eyebrow }}</p><h2 class="mt-4 text-4xl font-semibold leading-tight tracking-[-.04em] md:text-5xl">{{ testimonialIntro().title }}</h2><p class="mt-5 leading-8 text-slate-600">{{ testimonialIntro().subtitle }} {{ testimonialIntro().body }}</p><div class="mt-8 flex gap-2"><button type="button" (click)="moveTestimonial(-1)" class="grid h-12 w-12 place-items-center rounded-full border border-forest-900/15 bg-white text-forest-900 hover:bg-forest-900 hover:text-white" aria-label="Testimonio anterior"><svg lucideChevronLeft size="21"></svg></button><button type="button" (click)="moveTestimonial(1)" class="grid h-12 w-12 place-items-center rounded-full border border-forest-900/15 bg-white text-forest-900 hover:bg-forest-900 hover:text-white" aria-label="Testimonio siguiente"><svg lucideChevronRight size="21"></svg></button></div></div>
+        <article class="relative rounded-[34px] bg-white p-8 shadow-[0_20px_70px_rgba(9,38,31,.10)] md:p-12"><svg lucideQuote size="50" class="text-harvest-500/35"></svg><blockquote class="mt-6 text-2xl font-semibold leading-relaxed tracking-tight text-forest-950 md:text-3xl">“{{ testimonial().body }}”</blockquote><div class="mt-8 border-t border-black/7 pt-6"><strong class="block text-lg">{{ testimonial().title }}</strong><span class="mt-1 block text-sm font-semibold text-harvest-600">{{ testimonial().eyebrow }}</span><p class="mt-2 text-slate-500">{{ testimonial().subtitle }}</p></div></article>
+      </div>
+    </section>
+
+    <section class="py-24 lg:py-28">
+      <div class="mx-auto max-w-[1440px] px-5 lg:px-10">
+        <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between"><div><p class="eyebrow">{{ galleryIntro().eyebrow }}</p><h2 class="mt-4 text-4xl font-semibold tracking-[-.04em] md:text-5xl">{{ galleryIntro().title }}</h2><p class="mt-3 max-w-2xl text-slate-600">{{ galleryIntro().subtitle }} {{ galleryIntro().body }}</p></div><div class="flex gap-2"><button type="button" (click)="moveGallery(-1)" class="grid h-12 w-12 place-items-center rounded-full border border-forest-900/15 text-forest-900 hover:bg-forest-900 hover:text-white" aria-label="Imágenes anteriores"><svg lucideChevronLeft size="21"></svg></button><button type="button" (click)="moveGallery(1)" class="grid h-12 w-12 place-items-center rounded-full border border-forest-900/15 text-forest-900 hover:bg-forest-900 hover:text-white" aria-label="Imágenes siguientes"><svg lucideChevronRight size="21"></svg></button></div></div>
+        <div class="mt-10 grid gap-5 md:grid-cols-3">
+          @for (item of visibleGallery(); track item.id || item.contentKey; let index = $index) {
+            <article class="group relative overflow-hidden rounded-[28px] bg-forest-950" [class.md:-translate-y-5]="index === 1"><img [src]="item.imageUrl || '/cacao-hero.png'" [alt]="item.title" class="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-105" /><div class="absolute inset-0 bg-gradient-to-t from-forest-950 via-transparent to-transparent"></div><div class="absolute inset-x-0 bottom-0 p-6 text-white"><p class="eyebrow !text-harvest-500">{{ item.eyebrow }}</p><h3 class="mt-2 text-2xl font-bold">{{ item.title }}</h3><p class="mt-2 text-sm text-white/60">{{ item.subtitle }}</p></div></article>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="contacto" class="scroll-mt-24 px-5 pb-24 lg:px-10 lg:pb-28">
+      <div class="relative mx-auto max-w-[1340px] overflow-hidden rounded-[38px] bg-harvest-500 p-8 text-forest-950 md:p-14">
+        <div class="absolute -right-20 -top-24 h-80 w-80 rounded-full border-[60px] border-white/12"></div>
+        <div class="relative grid items-center gap-9 md:grid-cols-[1fr_auto]"><div><p class="eyebrow !text-forest-800">{{ contact().eyebrow }}</p><h2 class="mt-3 max-w-3xl text-4xl font-semibold leading-tight tracking-[-.04em] md:text-5xl">{{ contact().title }}</h2><p class="mt-4 max-w-2xl text-lg leading-8 text-forest-900/70">{{ contact().subtitle }} {{ contact().body }}</p></div><a [href]="resolveLink(contact().primaryCtaUrl)" target="_blank" rel="noopener" class="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-forest-950 px-8 font-bold text-white shadow-xl">{{ contact().primaryCtaLabel || 'Abrir WhatsApp' }} <svg lucideMessageCircle size="20"></svg></a></div>
+      </div>
+    </section>
   </main>
 
-  <footer class="border-t border-black/6 bg-cream-100 py-10">
-    <div class="mx-auto flex max-w-7xl flex-col gap-5 px-5 text-sm text-slate-500 md:flex-row md:items-center md:justify-between lg:px-8">
-      <div class="flex items-center gap-3 font-bold text-forest-900"><span class="grid h-9 w-9 place-items-center rounded-xl bg-forest-900 text-white"><svg lucideSprout size="19"></svg></span> {{ price().businessName | uppercase }}</div>
-      <p class="flex items-center gap-2"><svg lucideMapPin size="16"></svg>{{ price().contactAddress || price().location }} · Compra responsable de cacao</p>
-      <p>© 2026 {{ price().businessName }}</p>
+  <footer class="bg-forest-950 text-white">
+    <div class="mx-auto grid max-w-[1340px] gap-12 px-5 py-16 md:grid-cols-2 lg:grid-cols-[1.3fr_.7fr_.7fr_1fr] lg:px-10">
+      <div><div class="flex items-center gap-4"><span class="grid h-16 w-16 place-items-center overflow-hidden rounded-2xl bg-white p-1.5"><img [src]="price().logoUrl || '/grupo-alvarez-cacao-logo.png'" [alt]="'Logo de ' + price().businessName" class="h-full w-full object-contain" /></span><div><strong class="block text-lg tracking-wide">{{ price().businessName | uppercase }}</strong><small class="text-xs uppercase tracking-[.2em] text-harvest-500">{{ footerContent().title }}</small></div></div><p class="mt-6 max-w-md leading-7 text-white/52">{{ footerContent().subtitle }} {{ footerContent().body }}</p></div>
+      <div><h3 class="text-sm font-bold uppercase tracking-[.15em] text-harvest-500">Explora</h3><nav class="mt-5 grid gap-3 text-sm text-white/60"><a href="#inicio" class="hover:text-white">Inicio</a><a href="#nosotros" class="hover:text-white">Nosotros</a><a href="#servicios" class="hover:text-white">Servicios</a><a href="#impacto" class="hover:text-white">Impacto</a></nav></div>
+      <div><h3 class="text-sm font-bold uppercase tracking-[.15em] text-harvest-500">Productores</h3><nav class="mt-5 grid gap-3 text-sm text-white/60"><a href="#precio" class="hover:text-white">Precio de hoy</a><a href="#proceso" class="hover:text-white">Cómo vendemos</a><a [href]="whatsappLink()" target="_blank" rel="noopener" class="hover:text-white">Vender mi cacao</a><a routerLink="/admin/login" class="hover:text-white">Administración</a></nav></div>
+      <div><h3 class="text-sm font-bold uppercase tracking-[.15em] text-harvest-500">Contacto</h3><div class="mt-5 grid gap-4 text-sm leading-6 text-white/60"><p class="flex gap-2"><svg lucideMapPin size="17" class="mt-1 shrink-0 text-harvest-500"></svg>{{ price().contactAddress || price().location }}</p>@if (price().contactPhone) { <a [href]="'tel:' + price().contactPhone" class="hover:text-white">{{ price().contactPhone }}</a> }@if (price().contactEmail) { <a [href]="'mailto:' + price().contactEmail" class="break-all hover:text-white">{{ price().contactEmail }}</a> }</div></div>
     </div>
+    <div class="border-t border-white/8"><div class="mx-auto flex max-w-[1340px] flex-col gap-3 px-5 py-6 text-xs text-white/35 sm:flex-row sm:items-center sm:justify-between lg:px-10"><p>© {{ currentYear }} {{ price().businessName }}. Todos los derechos reservados.</p><p>Precio claro · Peso exacto · Trazabilidad</p></div></div>
   </footer>
 </div>

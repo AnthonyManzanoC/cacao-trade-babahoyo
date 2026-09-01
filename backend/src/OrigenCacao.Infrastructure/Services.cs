@@ -26,7 +26,8 @@ internal static class Maps
         x.QuantityQuintals, x.UnitPrice, x.CostBasisPerQuintal, x.Total, x.GrossProfit, x.PaymentMethod,
         x.SoldAtUtc, x.Notes, x.IsVoided);
 
-    public static SettingsDto Settings(BusinessSettings x) => new(x.BusinessName, x.MarginPerQuintal,
+    public static SettingsDto Settings(BusinessSettings x) => new(x.BusinessName, x.LogoUrl,
+        x.PriceClockLabel, x.TimeZone, x.MarginPerQuintal,
         x.WetPriceFactor, x.UseManualPrice, x.ManualDryPricePerQuintal, x.CurrentMarketPricePerMetricTon,
         x.CurrentDryPricePerQuintal, x.CurrentWetPricePerQuintal, x.CurrentPriceUpdatedAtUtc,
         x.ApiLastSuccessAtUtc, x.ApiLastError, x.PriceSource, x.ContactWhatsApp, x.ContactAddress,
@@ -295,7 +296,8 @@ public sealed class SettingsService(AppDbContext db, IOptions<ApiNinjasOptions> 
     public async Task<PublicPriceDto> GetPublicPriceAsync(CancellationToken ct)
     {
         var x = await db.BusinessSettings.AsNoTracking().SingleAsync(s => s.Id == 1, ct);
-        return new PublicPriceDto(x.BusinessName, x.CurrentDryPricePerQuintal, x.CurrentWetPricePerQuintal,
+        return new PublicPriceDto(x.BusinessName, x.LogoUrl, x.PriceClockLabel, x.TimeZone,
+            x.CurrentDryPricePerQuintal, x.CurrentWetPricePerQuintal,
             x.CurrentMarketPricePerMetricTon, x.CurrentPriceUpdatedAtUtc, x.PriceSource, x.UseManualPrice,
             x.ContactWhatsApp, x.ContactAddress, x.ContactPhone, x.ContactEmail, x.GoogleMapsEmbedUrl,
             x.Location, x.PickupEnabled,
@@ -308,6 +310,8 @@ public sealed class SettingsService(AppDbContext db, IOptions<ApiNinjasOptions> 
     public async Task<SettingsDto> UpdateAsync(UpdateSettingsRequest request, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(request.BusinessName)) throw new ArgumentException("El nombre del negocio es obligatorio.");
+        if (string.IsNullOrWhiteSpace(request.LogoUrl)) throw new ArgumentException("La URL del logo es obligatoria.");
+        if (string.IsNullOrWhiteSpace(request.PriceClockLabel)) throw new ArgumentException("La etiqueta del reloj es obligatoria.");
         if (request.MarginPerQuintal < 0 || request.WetPriceFactor is <= 0 or > 1) throw new ArgumentException("Margen o factor de cacao en baba inválido.");
         if (request.UseManualPrice && (!request.ManualDryPricePerQuintal.HasValue || request.ManualDryPricePerQuintal <= 0)) throw new ArgumentException("Ingresa un precio manual válido.");
         if (!string.IsNullOrWhiteSpace(request.ContactEmail) && !System.Net.Mail.MailAddress.TryCreate(request.ContactEmail, out _))
@@ -319,7 +323,9 @@ public sealed class SettingsService(AppDbContext db, IOptions<ApiNinjasOptions> 
                 throw new ArgumentException("Completa correctamente host, puerto y correo SMTP.");
         }
         var x = await db.BusinessSettings.SingleAsync(s => s.Id == 1, ct);
-        x.BusinessName = request.BusinessName.Trim(); x.MarginPerQuintal = request.MarginPerQuintal; x.WetPriceFactor = request.WetPriceFactor;
+        x.BusinessName = request.BusinessName.Trim(); x.LogoUrl = request.LogoUrl.Trim();
+        x.PriceClockLabel = request.PriceClockLabel.Trim(); x.TimeZone = string.IsNullOrWhiteSpace(request.TimeZone) ? "America/Guayaquil" : request.TimeZone.Trim();
+        x.MarginPerQuintal = request.MarginPerQuintal; x.WetPriceFactor = request.WetPriceFactor;
         x.UseManualPrice = request.UseManualPrice; x.ManualDryPricePerQuintal = request.ManualDryPricePerQuintal;
         x.ContactWhatsApp = request.ContactWhatsApp.Trim(); x.ContactAddress = request.ContactAddress.Trim();
         x.ContactPhone = request.ContactPhone.Trim(); x.ContactEmail = request.ContactEmail.Trim().ToLowerInvariant();

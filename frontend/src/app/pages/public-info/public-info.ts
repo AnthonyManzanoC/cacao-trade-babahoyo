@@ -2,12 +2,12 @@ import { UpperCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { LucideArrowRight, LucideMapPin, LucideScale, LucideShieldCheck, LucideSprout, LucideTruck } from '@lucide/angular';
+import { LucideArrowRight, LucideMapPin, LucideScale, LucideShieldCheck, LucideTruck } from '@lucide/angular';
 import { forkJoin } from 'rxjs';
 import { ApiService } from '../../core/api.service';
 import { PublicContent, PublicContentSection, PublicPrice } from '../../core/models';
 
-@Component({ selector: 'app-public-info', imports: [RouterLink, UpperCasePipe, LucideArrowRight, LucideMapPin, LucideScale, LucideShieldCheck, LucideSprout, LucideTruck], templateUrl: './public-info.html', changeDetection: ChangeDetectionStrategy.OnPush })
+@Component({ selector: 'app-public-info', imports: [RouterLink, UpperCasePipe, LucideArrowRight, LucideMapPin, LucideScale, LucideShieldCheck, LucideTruck], templateUrl: './public-info.html', changeDetection: ChangeDetectionStrategy.OnPush })
 export class PublicInfo {
   private readonly api = inject(ApiService); private readonly route = inject(ActivatedRoute); private readonly sanitizer = inject(DomSanitizer);
   readonly section = this.route.snapshot.data['section'] as PublicContentSection;

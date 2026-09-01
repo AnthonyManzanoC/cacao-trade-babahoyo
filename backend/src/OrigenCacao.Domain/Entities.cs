@@ -11,7 +11,19 @@ public enum CocoaVariety { Nacional, Ccn51, Trinitario, Otro }
 public enum CocoaState { Baba, Seco }
 public enum PaymentMethod { Efectivo, Transferencia, Cheque, Otro }
 public enum MovementType { Compra, Venta, AjusteEntrada, AjusteSalida, Reversion, SecadoSalidaBaba, SecadoEntradaSeco }
-public enum PublicContentSection { Hero, Nosotros, Contacto, Servicio }
+public enum PublicContentSection
+{
+    Hero,
+    Nosotros,
+    Contacto,
+    Servicio,
+    Beneficio,
+    Proceso,
+    Impacto,
+    Testimonio,
+    Galeria,
+    Footer
+}
 public enum CashRegisterStatus { Abierta, Cerrada }
 public enum CashMovementDirection { Ingreso, Egreso }
 public enum CashMovementCategory { CompraCacao, VentaCacao, GastoOperativo, Aporte, Retiro, Ajuste }
@@ -192,7 +204,10 @@ public sealed class InventoryMovement : Entity
 public sealed class BusinessSettings
 {
     public int Id { get; set; } = 1;
-    public string BusinessName { get; set; } = "Origen Cacao";
+    public string BusinessName { get; set; } = "Grupo Álvarez";
+    public string LogoUrl { get; set; } = "/grupo-alvarez-cacao-logo.png";
+    public string PriceClockLabel { get; set; } = "Hora Ecuador";
+    public string TimeZone { get; set; } = "America/Guayaquil";
     public decimal MarginPerQuintal { get; set; } = 18m;
     public decimal WetPriceFactor { get; set; } = 0.40m;
     public bool UseManualPrice { get; set; } = true;

@@ -13,7 +13,9 @@ const empty = (): ContentForm => ({ id: '', contentKey: '', section: 'Servicio',
 export class SiteContent {
   private readonly api = inject(ApiService);
   readonly items = signal<PublicContent[]>([]); readonly panelOpen = signal(false); readonly saving = signal(false);
-  readonly error = signal(''); readonly success = signal(''); readonly sections: PublicContentSection[] = ['Hero', 'Nosotros', 'Servicio', 'Contacto'];
+  readonly error = signal(''); readonly success = signal(''); readonly sections: PublicContentSection[] = [
+    'Hero', 'Nosotros', 'Servicio', 'Beneficio', 'Proceso', 'Impacto', 'Testimonio', 'Galeria', 'Contacto', 'Footer'
+  ];
   form = empty();
   constructor() { this.load(); }
   load() { this.api.adminPublicContent().subscribe({ next: x => this.items.set(x), error: () => this.error.set('No se pudo cargar el contenido público.') }); }

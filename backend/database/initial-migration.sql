@@ -242,6 +242,7 @@ BEGIN
     END IF;
 END $EF$;
 COMMIT;
+
 START TRANSACTION;
 
 
@@ -614,6 +615,39 @@ BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260831050242_GlobalContactSmtpAndReceipts') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
     VALUES ('20260831050242_GlobalContactSmtpAndReceipts', '8.0.11');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260901044844_GlobalBrandClockAndLanding') THEN
+    ALTER TABLE cacao."BusinessSettings" ADD "LogoUrl" character varying(1200) NOT NULL DEFAULT '';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260901044844_GlobalBrandClockAndLanding') THEN
+    ALTER TABLE cacao."BusinessSettings" ADD "PriceClockLabel" character varying(80) NOT NULL DEFAULT '';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260901044844_GlobalBrandClockAndLanding') THEN
+    ALTER TABLE cacao."BusinessSettings" ADD "TimeZone" character varying(120) NOT NULL DEFAULT '';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260901044844_GlobalBrandClockAndLanding') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260901044844_GlobalBrandClockAndLanding', '8.0.11');
     END IF;
 END $EF$;
 COMMIT;

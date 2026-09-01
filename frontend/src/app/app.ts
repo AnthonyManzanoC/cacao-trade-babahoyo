@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { BrandService } from './core/brand.service';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +9,6 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {}
+export class App {
+  private readonly brand = inject(BrandService);
+}

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideCircleCheck, LucideCloudCog, LucideRefreshCw, LucideSave, LucideShieldCheck, LucideTriangleAlert } from '@lucide/angular';
 import { finalize } from 'rxjs';
 import { ApiService } from '../../core/api.service';
+import { BrandService } from '../../core/brand.service';
 import { SettingsData } from '../../core/models';
 
 type SettingsForm = SettingsData & { smtpPassword: string };
@@ -11,6 +12,7 @@ type SettingsForm = SettingsData & { smtpPassword: string };
 @Component({ selector: 'app-settings', imports: [CurrencyPipe, DatePipe, FormsModule, LucideCircleCheck, LucideCloudCog, LucideRefreshCw, LucideSave, LucideShieldCheck, LucideTriangleAlert], templateUrl: './settings.html', changeDetection: ChangeDetectionStrategy.OnPush })
 export class Settings {
   private readonly api = inject(ApiService);
+  private readonly brand = inject(BrandService);
   readonly data = signal<SettingsData | null>(null);
   readonly form = signal<SettingsForm | null>(null);
   readonly saving = signal(false);
@@ -32,7 +34,7 @@ export class Settings {
     if (!form) return;
     this.message.set(''); this.error.set(''); this.saving.set(true);
     this.api.updateSettings(form).pipe(finalize(() => this.saving.set(false))).subscribe({
-      next: x => { this.data.set(x); this.form.set({ ...x, smtpPassword: '' }); this.message.set('Configuración guardada. El portal público ya usa estos datos.'); },
+      next: x => { this.data.set(x); this.form.set({ ...x, smtpPassword: '' }); this.brand.set({ businessName: x.businessName, logoUrl: x.logoUrl }); this.message.set('Configuración guardada. El portal público ya usa estos datos.'); },
       error: e => this.error.set(e?.error?.title ?? e?.error?.detail ?? 'No se pudo guardar.')
     });
   }

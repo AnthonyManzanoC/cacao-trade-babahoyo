@@ -1,4 +1,4 @@
-# Origen Cacao
+# Grupo Álvarez · Origen Cacao
 
 Sistema integral para la compra y venta de cacao en Ecuador: portal público multipágina y editable desde un CMS, más un ERP/CRM para productores, compras, lotes, secado, inventario FIFO, ventas, rentabilidad, caja y configuración de precios.
 
@@ -53,7 +53,7 @@ Si las dos fuentes externas fallan, se aplica el **Precio manual de respaldo** c
 
 ## Marca, contacto y correo
 
-En **Admin → Configuración** se gestiona el nombre que aparece en todo el portal, ciudad, dirección, teléfono, WhatsApp, correo de contacto y URL de inserción de Google Maps. El campo de mapa debe contener la URL `src` que entrega Google Maps en “Insertar un mapa”.
+En **Admin → Configuración** se gestiona el nombre que aparece en todo el portal, el logo global, la etiqueta y zona horaria del reloj del marcador, ciudad, dirección, teléfono, WhatsApp, correo de contacto y URL de inserción de Google Maps. El logo se aplica también al panel, acceso y favicon. La zona predeterminada es `America/Guayaquil`, correspondiente a Ecuador continental. El campo de mapa debe contener la URL `src` que entrega Google Maps en “Insertar un mapa”.
 
 La misma pantalla configura SMTP: host, puerto, correo remitente, contraseña o clave de aplicación, TLS/SSL y el interruptor de envío. La contraseña se guarda en la base, pero la API nunca la devuelve al navegador. Con SMTP habilitado, cada compra y venta terminada muestra un modal para descargar su PDF o enviarlo al correo registrado; si no hay correo, se puede escribir uno opcionalmente. Endpoints: `POST /api/purchases/{id}/email-receipt` y `POST /api/sales/{id}/email-receipt`.
 
@@ -61,7 +61,7 @@ La calculadora pública trabaja en quintales para cacao seco y exclusivamente en
 
 ## Módulos operativos
 
-- **Gestión de Sitio Web:** CRUD de `PublicContent` para Hero, Nosotros, Servicios y Contacto. El portal consume `GET /api/public-content`.
+- **Gestión de Sitio Web:** CRUD de `PublicContent` para carrusel Hero, Nosotros, Servicios, Beneficios, Proceso, Impacto, Testimonios, Galería, Contacto y Footer. El portal consume `GET /api/public-content`.
 - **Compras y lotes:** una compra crea un lote con stock, costo, humedad y trazabilidad; sus comprobantes PDF pueden descargarse o enviarse por correo.
 - **Caja:** apertura diaria, gastos/aportes/retiros, movimientos automáticos para compras y ventas en efectivo y conciliación de cierre.
 - **Secado:** consume cacao en baba por FIFO, registra rendimiento y pérdida, y crea un lote seco conservando el costo total.

@@ -37,14 +37,16 @@ public sealed record InventoryLotDto(Guid Id, string Code, Guid? PurchaseId, Gui
     decimal AvailableQuantityQuintals, decimal UnitCost, decimal HumidityPercent,
     InventoryLotStatus Status, DateTime ReceivedAtUtc, string? Notes);
 
-public sealed record PublicPriceDto(string BusinessName, decimal DryPricePerQuintal,
+public sealed record PublicPriceDto(string BusinessName, string LogoUrl, string PriceClockLabel, string TimeZone,
+    decimal DryPricePerQuintal,
     decimal WetPricePerQuintal, decimal MarketPricePerMetricTon, DateTime UpdatedAtUtc,
     string Source, bool IsManual, string ContactWhatsApp, string ContactAddress, string ContactPhone,
     string ContactEmail, string GoogleMapsEmbedUrl, string Location, bool PickupEnabled,
     DateTime NextAutomaticRefreshAtUtc);
 public sealed record PricePointDto(DateTime QuotedAtUtc, decimal DryPricePerQuintal,
     decimal WetPricePerQuintal, decimal MarketPricePerMetricTon, string Source);
-public sealed record SettingsDto(string BusinessName, decimal MarginPerQuintal, decimal WetPriceFactor,
+public sealed record SettingsDto(string BusinessName, string LogoUrl, string PriceClockLabel, string TimeZone,
+    decimal MarginPerQuintal, decimal WetPriceFactor,
     bool UseManualPrice, decimal? ManualDryPricePerQuintal, decimal CurrentMarketPricePerMetricTon,
     decimal CurrentDryPricePerQuintal, decimal CurrentWetPricePerQuintal,
     DateTime CurrentPriceUpdatedAtUtc, DateTime? ApiLastSuccessAtUtc, string? ApiLastError,
@@ -52,7 +54,8 @@ public sealed record SettingsDto(string BusinessName, decimal MarginPerQuintal, 
     string ContactEmail, string GoogleMapsEmbedUrl, string Location, bool PickupEnabled,
     bool EmailSendingEnabled, string SmtpHost, int SmtpPort, string SmtpEmail,
     bool SmtpPasswordConfigured, bool SmtpUseSsl);
-public sealed record UpdateSettingsRequest(string BusinessName, decimal MarginPerQuintal,
+public sealed record UpdateSettingsRequest(string BusinessName, string LogoUrl, string PriceClockLabel, string TimeZone,
+    decimal MarginPerQuintal,
     decimal WetPriceFactor, bool UseManualPrice, decimal? ManualDryPricePerQuintal,
     string ContactWhatsApp, string ContactAddress, string ContactPhone, string ContactEmail,
     string GoogleMapsEmbedUrl, string Location, bool PickupEnabled, bool EmailSendingEnabled,
