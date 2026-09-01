@@ -1,0 +1,77 @@
+<div class="min-h-screen overflow-x-hidden bg-cream-50 text-forest-950">
+  <header class="relative z-30 border-b border-white/10 bg-forest-950 text-white">
+    <nav class="mx-auto flex h-22 max-w-[1400px] items-center justify-between px-5 lg:px-10" aria-label="Navegación de Servicios">
+      <a routerLink="/" class="flex items-center gap-3">
+        <span class="grid h-13 w-13 place-items-center overflow-hidden rounded-2xl bg-white p-1.5"><img [src]="price().logoUrl || '/grupo-alvarez-cacao-logo.png'" [alt]="'Logo de ' + price().businessName" class="h-full w-full object-contain" /></span>
+        <span><strong class="block text-sm tracking-wide sm:text-base">{{ price().businessName | uppercase }}</strong><small class="block text-[9px] uppercase tracking-[.23em] text-harvest-500 sm:text-[10px]">Compra justa de cacao</small></span>
+      </a>
+      <div class="hidden items-center gap-8 text-sm font-semibold text-white/65 md:flex"><a routerLink="/" class="hover:text-white">Inicio</a><a routerLink="/servicios" class="text-harvest-500">Servicios</a><a routerLink="/nosotros" class="hover:text-white">Nosotros</a><a routerLink="/contacto" class="hover:text-white">Contacto</a></div>
+      <a routerLink="/contacto" class="rounded-full bg-harvest-500 px-4 py-2.5 text-xs font-bold text-forest-950 sm:px-5">Contáctanos</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="relative overflow-hidden bg-forest-950 pb-20 pt-14 text-white lg:pb-28 lg:pt-20">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(36,134,98,.28),transparent_34%),radial-gradient(circle_at_85%_70%,rgba(237,148,31,.18),transparent_30%)]"></div>
+      <div class="relative mx-auto grid max-w-[1340px] items-center gap-12 px-5 lg:grid-cols-[.94fr_1.06fr] lg:px-10">
+        <div>
+          <a routerLink="/" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.16em] text-white/45 hover:text-white">Inicio <span>/</span> Servicios</a>
+          <p class="eyebrow mt-10 !text-harvest-500">{{ serviceIntro().eyebrow }}</p>
+          <h1 class="mt-5 max-w-3xl text-5xl font-semibold leading-[1.03] tracking-[-.05em] md:text-7xl">{{ serviceIntro().title }}</h1>
+          <p class="mt-7 max-w-2xl text-xl leading-9 text-white/72">{{ serviceIntro().subtitle }}</p>
+          @if (serviceIntro().body) { <p class="mt-4 max-w-2xl leading-8 text-white/50">{{ serviceIntro().body }}</p> }
+          <div class="mt-9 flex flex-col gap-3 sm:flex-row"><a [href]="whatsappLink()" target="_blank" rel="noopener" class="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-harvest-500 px-6 font-bold text-forest-950">Coordinar por WhatsApp <svg lucideArrowRight size="18"></svg></a><a routerLink="/" fragment="precio" class="inline-flex min-h-13 items-center justify-center rounded-xl border border-white/20 bg-white/8 px-6 font-semibold text-white backdrop-blur">Ver precio de hoy</a></div>
+        </div>
+        <div class="relative">
+          <div class="overflow-hidden rounded-[34px] border border-white/10 bg-white/5 p-2 shadow-2xl shadow-black/25"><img [src]="heroImage()" [alt]="serviceIntro().title" class="aspect-[5/4] w-full rounded-[28px] object-cover" /></div>
+          <div class="absolute -bottom-6 left-5 max-w-[270px] rounded-3xl bg-white p-5 text-forest-950 shadow-2xl sm:left-8 sm:p-6"><span class="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-50 text-forest-800"><svg lucideSprout size="23"></svg></span><strong class="mt-4 block text-lg leading-6">{{ benefits()[0]?.eyebrow || 'Precio visible' }}</strong><small class="mt-1 block leading-5 text-slate-500">{{ benefits()[0]?.subtitle }}</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-24 lg:py-30">
+      <div class="mx-auto max-w-[1340px] px-5 lg:px-10">
+        <div class="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-end"><div><p class="eyebrow">Soluciones en el origen</p><h2 class="mt-4 text-4xl font-semibold leading-tight tracking-[-.04em] md:text-5xl">Servicios pensados para cada lote</h2></div><p class="max-w-2xl text-lg leading-8 text-slate-600">{{ serviceIntro().subtitle }} {{ serviceIntro().body }}</p></div>
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          @for (item of services(); track item.id || item.contentKey; let index = $index) {
+            <article class="group relative overflow-hidden rounded-[28px] border border-black/6 bg-white p-7 shadow-[0_12px_40px_rgba(9,38,31,.07)] transition hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(9,38,31,.12)]">
+              <span class="absolute right-5 top-4 text-5xl font-semibold text-forest-950/5">0{{ index + 1 }}</span>
+              <span class="grid h-13 w-13 place-items-center rounded-2xl bg-forest-950 text-harvest-500">@if (item.icon === 'truck') { <svg lucideTruck size="25"></svg> } @else if (item.icon === 'scale') { <svg lucideScale size="25"></svg> } @else { <svg lucideShieldCheck size="25"></svg> }</span>
+              <p class="eyebrow mt-8">{{ item.eyebrow }}</p><h3 class="mt-3 text-2xl font-semibold leading-tight">{{ item.title }}</h3><p class="mt-4 leading-7 text-slate-500">{{ item.subtitle }}</p><p class="mt-4 leading-7 text-slate-600">{{ item.body }}</p>
+              @if (item.primaryCtaLabel) { <a [href]="resolveLink(item.primaryCtaUrl)" class="mt-6 inline-flex items-center gap-2 font-bold text-forest-800">{{ item.primaryCtaLabel }} <svg lucideArrowRight size="17"></svg></a> }
+            </article>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-cream-100 py-24 lg:py-28">
+      <div class="mx-auto grid max-w-[1340px] gap-12 px-5 lg:grid-cols-[.88fr_1.12fr] lg:items-center lg:px-10">
+        <div class="relative overflow-hidden rounded-[32px] bg-forest-950 p-8 text-white sm:p-10">
+          <div class="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-harvest-500/20 blur-3xl"></div><svg lucideLeaf size="35" class="relative text-harvest-500"></svg><p class="eyebrow relative mt-9 !text-harvest-500">{{ benefitIntro().eyebrow }}</p><h2 class="relative mt-4 text-4xl font-semibold leading-tight tracking-[-.04em]">{{ benefitIntro().title }}</h2><p class="relative mt-5 text-lg leading-8 text-white/60">{{ benefitIntro().subtitle }} {{ benefitIntro().body }}</p>
+        </div>
+        <div class="grid gap-4">
+          @for (item of benefits(); track item.id || item.contentKey) { <article class="flex gap-5 rounded-3xl border border-black/6 bg-white p-6"><span class="mt-1 grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-700"><svg lucideCheck size="21"></svg></span><div><p class="eyebrow">{{ item.eyebrow }}</p><h3 class="mt-2 text-xl font-semibold">{{ item.title }}</h3><p class="mt-2 leading-7 text-slate-500">{{ item.subtitle }} {{ item.body }}</p></div></article> }
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white py-24 lg:py-28">
+      <div class="mx-auto max-w-[1340px] px-5 lg:px-10"><div class="mx-auto max-w-3xl text-center"><p class="eyebrow">{{ processIntro().eyebrow }}</p><h2 class="mt-4 text-4xl font-semibold tracking-[-.04em] md:text-5xl">{{ processIntro().title }}</h2><p class="mt-5 text-lg leading-8 text-slate-500">{{ processIntro().subtitle }}</p></div>
+        <div class="relative mt-14 grid gap-5 md:grid-cols-3">
+          <div class="absolute left-[16%] right-[16%] top-8 hidden h-px bg-forest-950/10 md:block"></div>
+          @for (step of processSteps(); track step.id || step.contentKey) { <article class="relative rounded-[26px] bg-cream-50 p-7 text-center"><span class="relative mx-auto grid h-16 w-16 place-items-center rounded-full bg-harvest-500 text-lg font-extrabold text-forest-950 shadow-lg shadow-harvest-500/20">{{ step.eyebrow }}</span><h3 class="mt-6 text-2xl font-semibold">{{ step.title }}</h3><p class="mt-3 leading-7 text-slate-500">{{ step.subtitle }}</p><p class="mt-3 leading-7 text-slate-600">{{ step.body }}</p></article> }
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-harvest-500 py-16">
+      <div class="mx-auto grid max-w-[1340px] items-center gap-8 px-5 md:grid-cols-[1fr_auto] lg:px-10"><div><p class="eyebrow !text-forest-800">{{ contact().eyebrow }}</p><h2 class="mt-3 max-w-3xl text-4xl font-semibold tracking-[-.04em]">{{ contact().title }}</h2><p class="mt-4 max-w-2xl text-lg leading-8 text-forest-900/70">{{ contact().subtitle }} {{ contact().body }}</p></div><a [href]="resolveLink(contact().primaryCtaUrl)" target="_blank" rel="noopener" class="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-forest-950 px-8 font-bold text-white">{{ contact().primaryCtaLabel || 'Abrir WhatsApp' }} <svg lucideMessageCircle size="20"></svg></a></div>
+    </section>
+  </main>
+
+  <footer class="bg-forest-950 py-12 text-white">
+    <div class="mx-auto grid max-w-[1340px] gap-8 px-5 md:grid-cols-[1.3fr_.7fr_.8fr] lg:px-10"><div class="flex items-start gap-4"><span class="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-2xl bg-white p-1.5"><img [src]="price().logoUrl || '/grupo-alvarez-cacao-logo.png'" [alt]="'Logo de ' + price().businessName" class="h-full w-full object-contain" /></span><div><strong class="text-lg">{{ price().businessName | uppercase }}</strong><p class="mt-2 max-w-md text-sm leading-6 text-white/50">{{ footer().subtitle }} {{ footer().body }}</p></div></div><nav class="grid content-start gap-3 text-sm text-white/55"><strong class="mb-1 text-white">Explora</strong><a routerLink="/" class="hover:text-white">Inicio</a><a routerLink="/nosotros" class="hover:text-white">Nosotros</a><a routerLink="/contacto" class="hover:text-white">Contacto</a></nav><div class="text-sm text-white/55"><strong class="text-white">Ubicación</strong><p class="mt-4 flex gap-2 leading-6"><svg lucideMapPin size="17" class="mt-1 shrink-0 text-harvest-500"></svg>{{ price().contactAddress || price().location || 'Ecuador' }}</p></div></div>
+    <div class="mx-auto mt-10 flex max-w-[1340px] flex-col gap-2 border-t border-white/8 px-5 pt-7 text-xs text-white/35 sm:flex-row sm:justify-between lg:px-10"><span>© {{ currentYear }} {{ price().businessName }}.</span><span>Precio claro · Peso exacto · Trazabilidad</span></div>
+  </footer>
+</div>

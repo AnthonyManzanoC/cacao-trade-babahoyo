@@ -28,6 +28,7 @@ public static class DatabaseSeeder
             if (string.IsNullOrWhiteSpace(settings.LogoUrl)) settings.LogoUrl = "/grupo-alvarez-cacao-logo.png";
             if (string.IsNullOrWhiteSpace(settings.PriceClockLabel)) settings.PriceClockLabel = "Hora Ecuador";
             if (string.IsNullOrWhiteSpace(settings.TimeZone)) settings.TimeZone = "America/Guayaquil";
+            if (string.IsNullOrWhiteSpace(settings.Location) || settings.Location == "Ecuador") settings.Location = "Babahoyo, Los Ríos, Ecuador";
         }
         if (!await db.AdminUsers.AnyAsync(ct))
         {
@@ -92,7 +93,22 @@ public static class DatabaseSeeder
                     Eyebrow = "Conversemos", Title = "Trae tu cacao o coordina una visita",
                     Subtitle = "Atención directa para productores, exportadoras y chocolaterías.",
                     Body = "Escríbenos para conocer el precio del día, horarios de recepción y opciones de transporte.",
-                    PrimaryCtaLabel = "Abrir WhatsApp", PrimaryCtaUrl = "#whatsapp", DisplayOrder = 0 },
+                    PrimaryCtaLabel = "Abrir WhatsApp", PrimaryCtaUrl = "#whatsapp", ImageUrl = "/cacao-productores-alianza.png", DisplayOrder = 0 },
+                new PublicContent { ContentKey = "contacto-productores", Section = PublicContentSection.Contacto,
+                    Eyebrow = "Compra de cacao", Title = "Atención para productores",
+                    Subtitle = "Consulta precio, condiciones de recepción y disponibilidad de recolección.",
+                    Body = "Cuéntanos si tu cacao está en baba o seco y la cantidad aproximada para orientarte mejor.",
+                    PrimaryCtaLabel = "Consultar por WhatsApp", PrimaryCtaUrl = "#whatsapp", Icon = "message", DisplayOrder = 1 },
+                new PublicContent { ContentKey = "contacto-comercial", Section = PublicContentSection.Contacto,
+                    Eyebrow = "Empresas y aliados", Title = "Relaciones comerciales",
+                    Subtitle = "Atención para exportadoras, chocolaterías y compradores institucionales.",
+                    Body = "Conversemos sobre disponibilidad, trazabilidad, calidades y coordinación logística.",
+                    Icon = "shield", DisplayOrder = 2 },
+                new PublicContent { ContentKey = "contacto-visitas", Section = PublicContentSection.Contacto,
+                    Eyebrow = "Centro de acopio", Title = "Visitas y logística",
+                    Subtitle = "Ubica el punto de atención y abre la ruta directamente en tu mapa.",
+                    Body = "Confirma el horario antes de trasladar tu cosecha para asegurar una recepción ágil.",
+                    Icon = "truck", DisplayOrder = 3 },
                 new PublicContent { ContentKey = "beneficio-intro", Section = PublicContentSection.Beneficio,
                     Eyebrow = "Lo que puedes esperar", Title = "Claridad desde que llegas hasta que recibes tu pago",
                     Subtitle = "Una compra bien hecha se nota en cada paso.", Body = "", Icon = "intro", DisplayOrder = 0 },

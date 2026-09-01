@@ -30,4 +30,10 @@ export class SiteContent {
   remove(item: Pick<PublicContent, 'id' | 'title'>) { if (!confirm(`¿Eliminar el bloque “${item.title}”?`)) return; this.api.deletePublicContent(item.id).subscribe({ next: () => { this.panelOpen.set(false); this.load(); }, error: e => this.error.set(e?.error?.title ?? 'No se pudo eliminar.') }); }
   sectionItems(section: PublicContentSection) { return this.items().filter(x => x.section === section); }
   sectionLabel(section: PublicContentSection) { return section === 'CarruselNosotros' ? 'Carrusel Nosotros' : section; }
+  sectionHelp(section: PublicContentSection) {
+    if (section === 'CarruselNosotros') return 'Solo cambia la fotografía de Nosotros; usa el orden para organizar las imágenes.';
+    if (section === 'Servicio') return 'Alimenta las tarjetas y el encabezado de /servicios. Usa “intro” para el encabezado.';
+    if (section === 'Contacto') return 'Alimenta la portada y /contacto. Mapa, teléfono, correo y WhatsApp se editan en Configuración.';
+    return '';
+  }
 }

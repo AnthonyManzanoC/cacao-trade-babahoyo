@@ -62,6 +62,7 @@ La calculadora pública trabaja en quintales para cacao seco y exclusivamente en
 ## Módulos operativos
 
 - **Gestión de Sitio Web:** CRUD de `PublicContent` para carrusel Hero, Nosotros, carrusel fotográfico de Nosotros, Servicios, Beneficios, Proceso, Impacto, Testimonios, Galería, Contacto y Footer. El carrusel de Nosotros cambia únicamente la fotografía; sus diapositivas se ordenan y publican desde el CMS y usan los recursos incluidos en el sistema cuando faltan registros o una URL. El portal consume `GET /api/public-content`.
+- **Páginas públicas independientes:** `/servicios` combina los bloques administrables de Servicios, Beneficios y Proceso; `/contacto` combina los bloques de Contacto con nombre, logo, dirección, teléfono, correo, WhatsApp y mapa gestionados en **Admin → Configuración**. Si no hay una URL de mapa válida, se genera un mapa de respaldo usando la ubicación configurada.
 - **Compras y lotes:** una compra crea un lote con stock, costo, humedad y trazabilidad; sus comprobantes PDF pueden descargarse o enviarse por correo.
 - **Caja:** apertura diaria, gastos/aportes/retiros, movimientos automáticos para compras y ventas en efectivo y conciliación de cierre.
 - **Secado:** consume cacao en baba por FIFO, registra rendimiento y pérdida, y crea un lote seco conservando el costo total.

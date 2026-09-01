@@ -17,7 +17,7 @@
           <div class="mt-5 flex flex-wrap gap-3"><button class="btn-primary" type="submit" [disabled]="saving()"><svg lucideSave size="17"></svg>{{ saving() ? 'Guardando…' : 'Guardar cambios' }}</button><button class="btn-secondary" type="button" (click)="refresh()" [disabled]="refreshing() || f.useManualPrice"><svg lucideRefreshCw size="17"></svg>{{ refreshing() ? 'Consultando…' : 'Consultar mercado ahora' }}</button></div>
         </section>
         <section class="panel p-6">
-          <h2 class="font-bold text-slate-900">Marca y contacto público</h2><p class="mt-1 text-xs text-slate-400">Se actualiza en cabeceras, pie de página, Contacto y WhatsApp.</p>
+          <h2 class="font-bold text-slate-900">Marca y contacto público</h2><p class="mt-1 text-xs text-slate-400">Se actualiza en cabeceras, pie de página y la página completa de Contacto: ubicación, mapa, llamadas, correo y WhatsApp.</p>
           <div class="mt-5 grid gap-5 sm:grid-cols-2">
             <div><label class="label" for="business">Nombre del negocio</label><input id="business" name="business" class="field" required [(ngModel)]="f.businessName" /></div>
             <div><label class="label" for="location">Ciudad / provincia</label><input id="location" name="location" class="field" [(ngModel)]="f.location" /></div>

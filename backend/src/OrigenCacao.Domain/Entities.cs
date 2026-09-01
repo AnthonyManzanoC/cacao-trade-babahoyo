@@ -225,7 +225,7 @@ public sealed class BusinessSettings
     public string ContactPhone { get; set; } = string.Empty;
     public string ContactEmail { get; set; } = string.Empty;
     public string GoogleMapsEmbedUrl { get; set; } = string.Empty;
-    public string Location { get; set; } = "Ecuador";
+    public string Location { get; set; } = "Babahoyo, Los Ríos, Ecuador";
     public bool PickupEnabled { get; set; } = true;
     public bool EmailSendingEnabled { get; set; }
     public string SmtpHost { get; set; } = string.Empty;

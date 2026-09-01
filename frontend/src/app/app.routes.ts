@@ -4,9 +4,9 @@ import { authGuard } from './core/auth.guard';
 export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/public-home/public-home').then(m => m.PublicHome) },
   { path: 'precios', loadComponent: () => import('./pages/public-home/public-home').then(m => m.PublicHome) },
-  { path: 'servicios', data: { section: 'Servicio' }, loadComponent: () => import('./pages/public-info/public-info').then(m => m.PublicInfo) },
+  { path: 'servicios', loadComponent: () => import('./pages/public-services/public-services').then(m => m.PublicServices) },
   { path: 'nosotros', data: { section: 'Nosotros' }, loadComponent: () => import('./pages/public-info/public-info').then(m => m.PublicInfo) },
-  { path: 'contacto', data: { section: 'Contacto' }, loadComponent: () => import('./pages/public-info/public-info').then(m => m.PublicInfo) },
+  { path: 'contacto', loadComponent: () => import('./pages/public-contact/public-contact').then(m => m.PublicContact) },
   { path: 'admin/login', loadComponent: () => import('./pages/login/login').then(m => m.Login) },
   {
     path: 'admin',
